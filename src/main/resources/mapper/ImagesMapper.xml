@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.ImagesMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.Images">
+        <result column="img_id" property="imgId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="img_url" property="imgUrl"/>
+        <result column="creat_time" property="creatTime"/>
+    </resultMap>
+    <!-- 查修 -->
+    <!-- 利用项目id查修 -->
+    <select id="selByProjectId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select  * from images
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != projectId and projectId != ''">  project_id = #{projectId} and</if>
+        </trim>
+    </select>
+    <!-- 添加 -->
+    <insert id="insertImges" parameterType="com.fjtons.oaglxt.pojo.Images">
+         INSERT INTO images
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != imgId and "" !=  imgId '>
+                `img_id`,
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                `project_id`,
+            </if>
+            <if test='imgUrl != imgId and "" !=  imgUrl '>
+                `img_url`,
+            </if>
+            <if test='null != creatTime and "" !=  creatTime '>
+                `creat_time`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != imgId and "" != imgId'>
+                #{imgId},
+            </if>
+            <if test='null != projectId and "" != projectId'>
+                #{projectId},
+            </if>
+            <if test='null != creatTime and "" != creatTime'>
+                #{creatTime},
+            </if>
+            <if test='null != creatTime and "" != creatTime'>
+                #{creatTime},
+            </if>
+        </trim>
+    </insert>
+    <!-- 删除 -->
+    <!-- 删除项目id的东西 -->
+    <delete id="deleteByProjectId" parameterType="java.lang.String">
+        delete
+        FROM imges
+        WHERE projectId = #{projectId}
+    </delete>
+</mapper>

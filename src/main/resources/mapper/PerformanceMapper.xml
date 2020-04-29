@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.PerformanceMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.Performance">
+        <result column="personnel_id" property="personnelId"/>
+        <result column="personnel_name" property="personnelName"/>
+        <result column="personnel_proportion" property="personnelProportion"/>
+        <result column="personnel_personnel" property="personnelPersonnel"/>
+        <result column="personnel_business" property="personnelBusiness"/>
+        <result column="personnel_note" property="personnelNote"/>
+        <result column="project_id" property="projectId"/>
+    </resultMap>
+    <!-- 查询 -->
+    <!-- 利用项目id查询全部信息 -->
+    <select id="selectPage"  resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.Performance">
+        select
+            *
+        from performance
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != personnelId and personnelId != ''">  personnel_id = #{personnelId} and</if>
+            <if test="null != personnelName and personnelName != ''">  personnel_name = #{personnelName} and</if>
+            <if test="null != personnelProportion and personnelProportion != ''"> personnel_proportion = #{personnelProportion} and</if>
+            <!--            <if test="null != supplierMaterialName and supplierMaterialName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>-->
+            <if test="null != personnelPersonnel and personnelPersonnel != ''"> personnel_personnel = #{personnelPersonnel} and</if>
+            <if test="null != personnelBusiness and personnelBusiness != ''"> personnel_business = #{personnelBusiness} and</if>
+            <if test="null != personnelNote and personnelNote != ''"> personnel_note = #{personnelNote} and</if>
+            <if test="null != projectId and projectId != ''">  project_id = #{projectId} and</if>
+        </trim>
+    </select>
+    <!-- 删除 -->
+    <!-- 利用序号删除项目基本表 -->
+    <delete id="deletePerformanceId" parameterType="int">
+        delete from performance where personnel_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 修改 -->
+    <!-- 利用序号修改项目基本表 -->
+    <update id="updatePerformance" parameterType="com.fjtons.oaglxt.pojo.Performance">
+        UPDATE performance
+        <set>
+            <if test="null != personnelName and personnelName != ''">  personnel_name = #{personnelName} ,</if>
+            <!--            <if test="null != supplierMaterialName and supplierMaterialName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>-->
+            <if test="null != personnelProportion and personnelProportion != ''"> personnel_proportion = #{personnelProportion} ,</if>
+            <if test="null != personnelPersonnel and personnelPersonnel != ''"> personnel_personnel = #{personnelPersonnel} ,</if>
+            <if test="null != personnelBusiness and personnelBusiness != ''"> personnel_business = #{personnelBusiness} ,</if>
+            <if test="null != personnelNote and personnelNote != ''"> personnel_note = #{personnelNote} ,</if>
+            <if test="null != projectId and projectId != ''">  project_id = #{projectId} ,</if>
+        </set>
+        WHERE personnel_id = #{personnelId}
+    </update>
+
+
+    <!-- 添加 -->
+    <insert id="insertPerformance"  parameterType="com.fjtons.oaglxt.pojo.Performance">
+        INSERT INTO performance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != personnelId and "" !=  personnelId '>
+                `personnel_id`,
+            </if>
+            <if test='null != personnelName and "" !=  personnelName'>
+                `personnel_name`,
+            </if>
+            <if test='null != personnelProportion and "" !=  personnelProportion'>
+                `personnel_proportion`,
+            </if>
+            <if test='null != personnelPersonnel and "" !=  personnelPersonnel'>
+                `personnel_personnel`,
+            </if>
+            <if test='null != personnelBusiness and "" !=  personnelBusiness'>
+                `personnel_business`,
+            </if>
+            <if test='null != personnelNote and "" !=  personnelNote'>
+                `personnel_note`,
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                `project_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != personnelId and "" !=  personnelId '>
+                #{personnelId},
+            </if>
+            <if test='null != personnelName and "" !=  personnelName'>
+                #{personnelName},
+            </if>
+            <if test='null != personnelProportion and "" !=  personnelProportion'>
+                #{personnelProportion},
+            </if>
+            <if test='null != personnelPersonnel and "" !=  personnelPersonnel'>
+                #{personnelPersonnel},
+            </if>
+            <if test='null != personnelBusiness and "" !=  personnelBusiness'>
+            #{personnelBusiness},
+            </if>
+            <if test='null != personnelNote and "" !=  personnelNote'>
+                #{personnelNote},
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                #{projectId},
+            </if>
+
+        </trim>
+    </insert>
+
+</mapper>

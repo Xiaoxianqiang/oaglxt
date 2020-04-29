@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>添加项目基本信息</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="stylesheet" href="/css/font.css">
+        <link rel="stylesheet" href="/css/xadmin.css">
+        <link rel="stylesheet" href="/lib/layui/css/modules/laydate/default/laydate.css">
+        <script type="text/javascript" src="/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="/js/xadmin.js"></script>
+
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]--></head>
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        input[type="number"]{
+            -moz-appearance: textfield;
+        }
+    </style>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label for="projectName" class="layui-form-label">
+                            <span class="x-red">*</span>项目名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="projectName" name="projectName" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label  class="layui-form-label">
+                            <span class="x-red">*</span>项目类型</label>
+                        <div class="layui-input-inline">
+                           <select id="projectType" name="projectType">
+                               <option value="1">工程项目</option>
+                               <option value="2">技术咨询项目</option>
+                               <option value="3">检测技术项目</option>
+                               <option value="4">政府采购项目</option>
+                               <option value="5">企业环保管家项目</option>
+                               <option value="6">其他项目</option>
+                           </select>
+                        </div>
+                        <a class="layui-btn layui-btn-small" id="addProjectType" onclick="addProductClassify()"><i class="layui-icon">&#xe654;</i>增加项目类型</a>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="grossAmount" class="layui-form-label">
+                            <span class="x-red">*</span>工程总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="number" id="grossAmount" name="grossAmount" maxlength="10" required="number"  autocomplete="off" class="layui-input"></div>
+                        <div class="layui-form-mid layui-word-aux">元</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="projectSource" class="layui-form-label">
+                            <span class="x-red">*</span>业务来源</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="projectSource" name="projectSource" required=""  autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="ownerName" class="layui-form-label">业主名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ownerName" name="ownerName" required=""  autocomplete="off" class="layui-input" >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                    <label  class="layui-form-label">主要负责人</label>
+                    <div class="layui-input-inline">
+                        <select name="principal" id="principal" lay-verify="required" lay-search="">
+                        </select>
+                    </div>
+                </div>
+                    <div class="layui-form-item">
+                        <label  class="layui-form-label">签订状态</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="aStateOf" lay-skin="switch" lay-text="签订|未签订"  lay-filter="aStateOf">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label  class="layui-form-label">外包状态</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="whetherOutsourcing" lay-skin="switch" lay-text="外包|未外包"  lay-filter="whetherOutsourcing">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text x-city" id="chenshi">
+                        <label  class="layui-form-label">地址</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-inline">
+                                <select name="province" lay-filter="province">
+                                    <option value="">请选择省</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="city" lay-filter="city">
+                                    <option value="">请选择市</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="area" lay-filter="area">
+                                    <option value="">请选择县/区</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label  class="layui-form-label">
+                            <span class="x-red">*</span>项目处理类型</label>
+                        <div class="layui-input-inline">
+                            <select id="projectProcessingType" name="projectProcessingType" lay-filter="">
+                                <option value="仅设备采购">仅设备采购</option>
+                                <option value="设计施工">设计施工</option>
+                                <option value="仅施工">仅施工</option>
+                                <option value="仅设计监理">仅设计监理</option>
+                                <option value="仅监理">仅监理</option>
+                                <option value="仅设计">仅设计</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="airTime" class="layui-form-label">开始时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="airTime" name="startTime" required=""  autocomplete="off" class="layui-input" >
+                        </div>
+                    </div>
+<!--                    <div class="layui-form-item">-->
+<!--                        <label for="finishTime" class="layui-form-label">结束时间</label>-->
+<!--                        <div class="layui-input-inline">-->
+<!--                            <input type="text" id="finishTime" name="finishTime" required=""  autocomplete="off" class="layui-input" >-->
+<!--                        </div>-->
+<!--                    </div>-->
+        <div class="layui-form-item">
+            <label  class="layui-form-label"></label>
+            <button class="layui-btn" lay-filter="add" lay-submit="" id="add">发送审批</button></div>
+               <!-- 推送给审核人待定 -->
+        </form>
+        </div>
+        </div>
+        <!-- 引入城市插件 -->
+        <script type="text/javascript" src="/js/xcity.js"></script>
+        <script>
+            layui.use(['form', 'layer','laydate','upload'],
+            function() {
+                var      $ = layui.jquery;
+                      form = layui.form;
+                var     layer = layui.layer;
+             var     laydate = layui.laydate;
+                var   upload = layui.upload;
+
+                var imagesPath="";//上传的图片路径
+                //隐藏不必要数值
+
+                //日期选择    finishTime
+                laydate.render({
+                    elem: '#airTime' //指定元素
+                });
+                laydate.render({
+                    elem: '#finishTime' //指定元素
+                });
+
+                //渲染负责人的信息
+                $.ajax({
+                    type:'POST',
+                    url:'/User/queryUserResponsible',
+                    dataType:'json',
+                    success:function(data){
+                        var str= "";
+                        for(var key in data){
+                            str += "<option value=\""+data[key].name+"\">"+data[key].name+"</option>";
+                        }
+                        $("#principal").append(str);
+                        form.render('select');
+                    }
+                });
+
+
+                //监听开关，开，在启动隐藏隐藏的事件
+                form.on('switch(whetherOutsourcing)',function (res) {
+                    console.log(res.elem.checked)
+                    if(res.elem.checked){//为true时关闭签订框的选项
+                        $("#aStateOf").removeAttr("checked")
+                        var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                        x[0].setAttribute("class", "layui-unselect layui-form-switch");
+                        var ds = document.getElementsByTagName('em')[0];
+                       // console.log(ds)
+                        ds.firstChild.nodeValue = '未签订';
+                    }else {
+                        form.render(null, 'aStateOf');
+                    }
+                return false;
+                })
+
+
+                //引入城市插件
+                $('#chenshi').xcity();//'福建','漳州市'
+
+
+                //监听提交
+                form.on('submit(add)',
+                function(data) {
+                    //创建基本信息对象
+                    console.log(data.field)
+                    // //提交信息
+                    $.ajax({
+                        url:"/Basic/insertBasucByserialNumber",
+                        type:"post",
+                        data:data.field,
+                        success:function (res) {
+                         //   console.log(res)
+                            if(res==1){
+                                layer.msg("添加成功");
+                                location.reload();
+                            }
+                        }
+                    })
+
+
+                    return false;
+                });
+
+            });</script>
+
+    </body>
+
+</html>

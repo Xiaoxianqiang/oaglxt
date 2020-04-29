@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>绩效添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <link rel="stylesheet" href="/lib/layui/css/modules/laydate/default/laydate.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="layui-form-label">分配名称</label>
+                <div class="layui-input-inline">
+                    <select id="personnelName" name="personnelName" lay-filter="" required="" >
+                        <optgroup label="管理/协调和前期跟踪/技术支持">
+                            <option value="管理协调">管理协调</option>
+                            <option value="跟踪支持">跟踪支持</option>
+                        </optgroup>
+                        <optgroup label="方案设计阶段">
+                            <option value="方案设计">方案设计</option>
+                        </optgroup>
+                        <optgroup label="日常运维">
+                            <option value="运维监督">运维监督</option>
+                            <option value="运维季报">运维季报</option>
+                            <option value="运维年报">运维年报</option>
+                            <option value="季度运维结算">季度运维结算</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">分配占比</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="personnelProportion"  name="personnelProportion"  required="" lay-verify="number" autocomplete="off" class="layui-input">
+                    还剩：<span id="haisheng"></span>%
+                </div>
+                <div class="layui-form-mid layui-word-aux">%</div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">人员</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="personnelPersonnel"  name="personnelPersonnel"  required="" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">是否新产生新的业务</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="personnelBusiness" id="personnelBusiness" required="" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label  class="layui-form-label">备注</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="personnelNote"  name="personnelNote"  required="" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="" id="add">增加</button></div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    function child(d){
+        console.log(d)
+        layui.use(['form', 'layer','laydate','upload'],
+            function() {
+                var $ = layui.jquery;
+                form = layui.form;
+                var layer = layui.layer;
+                var laydate = layui.laydate;
+                var upload = layui.upload;
+                //查询该项目剩下的百分比
+                $.ajax({
+                    url:"/Performance/selectPage",
+                    type:"post",
+                    data:{page:	"1",
+                        limit:	"10",
+                        "projectId":d},
+                    success:function (data) {
+                        console.log(data.data)
+                        var c=data.data
+                        var a=0;
+                        for (var i=0;i<c.length;i++){
+                            console.log(c[i].personnelProportion)
+                            a+=(+c[i].personnelProportion)
+                        }
+                        $("#haisheng").text(100-a);
+                        form.render();// 再次渲染select
+                        //   $("#notSignedproject").text(data.count)
+                    }
+                })
+
+
+                //监听提交
+                form.on('submit(add)',
+                    function(data) {
+                        data.field.projectId=d
+                        //taskAllocationSigned
+                        console.log(data.field.personnelProportion<$("#haisheng").text());
+                        if(data.field.personnelProportion<100){
+
+                            if(data.field.personnelProportion>$("#haisheng").text()){
+                                layer.msg("数值太大")
+                                console.log("dd")
+                            }else {
+                                $.ajax({
+                                    url:"/Performance/insertPerformance",
+                                    type:"post",
+                                    data:data.field,
+                                    success:function (res) {
+                                        console.log(res)
+                                        if(res==1){
+                                            layer.msg("添加成功");
+                                            //  location.reload();//刷新父页面
+                                            //   parent.location.reload();
+                                            window.parent.location.reload();
+                                        }else if(res==4){
+                                            layer.msg("账号重复");
+                                        }
+                                    }
+                                })
+                            }
+                        }else {
+                            layer.msg("数值太大")
+                        }
+
+                        //创建基本信息对象
+
+                        return false;
+                    })
+            })
+
+    }
+
+
+</script>
+</html>

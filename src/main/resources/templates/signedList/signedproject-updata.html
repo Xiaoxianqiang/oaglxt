@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>修改项目补充信息</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]--></head>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    input[type="number"]{
+        -moz-appearance: textfield;
+    }
+    .layui-disabled, .layui-disabled{
+        color: #555555;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="projectName" class="layui-form-label">
+                  项目名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="projectName"  disabled required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>项目类型</label>
+                <div class="layui-input-inline" >
+                    <select id="projectType" disabled >
+                        <option value="政府采购服务项目">政府采购服务项目</option>
+                        <option value="在线运营">在线运营</option>
+                        <option value="在线工程">在线工程</option>
+                        <option value="废气运营项目">废气运营项目</option>
+                        <option value="废水运营项目">废水运营项目</option>
+                        <option value="废气项目">废气项目</option>
+                        <option value="废水项目">废水项目</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label for="grossAmount" class="layui-form-label">
+                    <span class="x-red">*</span>工程总金额</label>
+                <div class="layui-input-inline">
+                    <input disabled type="number" onkeyup="value=value.replace(/[^\d]/g,'') " id="grossAmount"  required=""  autocomplete="off" class="layui-input"></div>
+                <label for="projectSource" class="layui-form-label">
+                    <span class="x-red">*</span>业务来源</label>
+                <div class="layui-input-inline">
+                    <input disabled type="text" id="projectSource"  required=""  autocomplete="off" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="ownerName" class="layui-form-label">业主名称</label>
+                <div class="layui-input-inline">
+                    <input disabled type="text" id="ownerName"  required=""  autocomplete="off" class="layui-input" >
+                </div>
+                <label  class="layui-form-label">主要负责人</label>
+                <div class="layui-input-inline">
+                    <select id="principal" lay-verify="required" lay-search="" disabled>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text x-city" id="chenshi">
+                <label  class="layui-form-label">地址</label>
+                <div class="layui-input-block">
+                    <div class="layui-input-inline">
+                        <select lay-filter="province" disabled>
+                            <option value="">请选择省</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select  lay-filter="city" disabled>
+                            <option value="">请选择市</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select  lay-filter="area" disabled>
+                            <option value="">请选择县/区</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>项目处理类型</label>
+                <div class="layui-input-inline">
+                    <select id="projectProcessingType"  lay-filter="" disabled>
+                        <option value="仅设备采购">仅设备采购</option>
+                        <option value="设计施工">设计施工</option>
+                        <option value="仅施工">仅施工</option>
+                        <option value="仅设计监理">仅设计监理</option>
+                        <option value="仅监理">仅监理</option>
+                        <option value="仅设计">仅设计</option>
+                    </select>
+                </div>
+                <label  class="layui-form-label">签订状态</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" id="aStateOf"  checked  lay-skin="switch" lay-text="签订|未签订"  lay-filter="aStateOf">
+                </div>
+            </div>
+                <div class="layui-form-item">
+                    <label for="startTime" class="layui-form-label">开始时间</label>
+                    <div class="layui-input-inline" >
+                        <input type="text" id="startTime" disabled required=""  autocomplete="off" class="layui-input" >
+                    </div>
+                    <label for="finishTime" class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="finishTime"  disabled autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+            <!-- 签订状态
+           -->
+            <div id="yinchang" >
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">预付款</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') "  id="advance" name="advance"    autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">到货款</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') " id="arrivalMoney" name="arrivalMoney"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">安装款</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') " id="installMoney" name="installMoney"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">验收款</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') " id="acceptMoney" name="acceptMoney"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">保证金</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') " id="cashDeposit" name="cashDeposit"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">业务支出</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') " id="businessExpense" name="businessExpense"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">供应商或分包单位名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="alias" name="alias"   autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">废气</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="flueGas" name="flueGas"    autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">废水</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="wasteWater" name="wasteWater"   autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label  class="layui-form-label">
+                        项目进度</label>
+                    <div class="layui-input-inline">
+                        <select id="projectProgress" name="projectProgress" lay-filter="">
+                            <option value="未开展">未开展</option>
+                            <option value="项目信息确认">项目信息确认</option>
+                            <option value="报价方案送出">报价方案送出</option>
+                            <option value="预付款已付">预付款已付</option>
+                            <option value="进度款A已付">进度款A已付</option>
+                            <option value="进度款B已付">进度款B已付</option>
+                            <option value="待验收">待验收</option>
+                            <option value="项目完成">项目完成(只保金未收)</option>
+                            <option value="项目完成">项目完成</option>
+                            <option value="项目终止">项目终止</option>
+                            <option value="除项目终止以外">除项目终止以外</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">收款比例</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="collectionRatio" name="collectionRatio"    autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">未收比例</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="uncollectedProportion" name="uncollectedProportion"  autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="grossAmount" class="layui-form-label">开票金额</label>
+                    <div class="layui-input-inline">
+                        <input type="number" onkeyup="value=value.replace(/[^\d]/g,'') "  id="invoiceAmount" name="invoiceAmount"    autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <!-- 未签订 -->
+            <div id="yinchang2" >
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">流失阶段</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="lossOfPhase" name="lossOfPhase"    autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="projectSource" class="layui-form-label">
+                        <span class="x-red">*</span>流失原因</label>
+                    <div class="layui-input-block">
+                        <textarea name="drainCauses"  id="drainCauses" name="drainCauses"  placeholder="请输入内容" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="update" lay-submit="" id="update">修改</button></div>
+        </form>
+    </div>
+</div>
+<!-- 引入城市插件 -->
+<script type="text/javascript" src="/js/xcity.js"></script>
+<script type="text/javascript" src="/js/xcity.js"></script>
+<script>
+    function child(d) {
+           console.log(d)//获取数值
+        layui.use(['form', 'layer','laydate','upload'],
+            function() {
+                var $ = layui.jquery;
+                form = layui.form;
+                var layer = layui.layer;
+                var laydate = layui.laydate;
+                var upload = layui.upload;
+
+                //渲染已有的数值
+                $("#projectName").val(d.projectName)//项目名称
+                $("#projectType").find("option[value="+d.basicProject.projectType+"]").attr("selected","selected");//项目类型
+                $("#grossAmount").val(d.grossAmount)//工程总金额
+                $("#projectSource").val(d.basicProject.projectSource)//业务来源
+                $("#ownerName").val(d.basicProject.ownerName)//业主名称
+                //$("#principal").find("option[value="+d.principal+"]").attr("selected","selected");//项目处理类型
+
+                //渲染负责人的信息
+                $.ajax({
+                    type:'POST',
+                    url:'/User/queryUserResponsible',
+                    dataType:'json',
+                    success:function(data){
+                        var str= "";
+                        for(var key in data){
+                            if(data[key].name==d.principal){
+                                str += "<option selected value=\""+data[key].name+"\">"+data[key].name+"</option>";
+                            }else {
+                                str += "<option value=\""+data[key].name+"\">"+data[key].name+"</option>";
+                            }
+                        }
+                        $("#principal").append(str);
+                        form.render('select');
+                    }
+                });
+
+
+
+                //引入城市插件
+                if(d.basicProject.province==null){
+                    $('#chenshi').xcity();
+                }else {
+                    $('#chenshi').xcity(d.basicProject.province,d.basicProject.city,d.basicProject.area);
+                }
+                $("#projectProcessingType").find("option[value="+d.basicProject.projectProcessingType+"]").attr("selected","selected");//项目处理类型
+                //是否签订
+                if(d.basicProject.astateOf=="on"){
+                    form.render(null, 'aStateOf');
+                }else {
+                    $("#aStateOf").removeAttr("checked")
+                    var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                    x[0].setAttribute("class", "layui-unselect layui-form-switch");
+                    var ds = document.getElementsByTagName('em')[0];
+
+                    ds.firstChild.nodeValue = '未签订';
+                }
+                //根据签订判断显示的内容
+                if(d.basicProject.astateOf=="on"){
+                    $("#yinchang").show()
+                    $("#yinchang2").hide()
+                }else {
+                    $("#yinchang2").show()
+                    $("#yinchang").hide()
+                }
+
+
+
+                //日期选择    finishTime
+                laydate.render({
+                    elem: '#startTime' //指定元素
+                    ,value: d.basicProject.startTime
+                });
+                laydate.render({
+                    elem: '#finishTime'  //指定元素
+                    ,value: d.basicProject.finishTime
+                });
+                $("#advance").val(d.advance);//开票金额
+                $("#arrivalMoney").val(d.arrivalMoney);//流失原因
+                $("#installMoney").val(d.installMoney);//流失阶段
+                $("#acceptMoney").val(d.acceptMoney);//开票金额
+                $("#cashDeposit").val(d.cashDeposit);//流失原因
+                $("#businessExpense").val(d.businessExpense);//流失阶段
+                $("#alias").val(d.alias);//开票金额
+                $("#flueGas").val(d.flueGas);//流失原因
+                $("#wasteWater").val(d.wasteWater);//流失阶段
+                $("#projectProgress").find("option[value="+d.projectProgress+"]").attr("selected","selected");//项目处理类型
+                $("#uncollectedProportion").val(d.uncollectedProportion);//开票金额
+                $("#uncollectedProportion").val(d.uncollectedProportion);//流失原因
+                $("#invoiceAmount").val(d.invoiceAmount);//开票金额
+                $("#drainCauses").val(d.drainCauses);//流失原因
+                $("#lossOfPhase").val(d.lossOfPhase);//流失阶段
+                var aStateOf;
+                //监听是否修改签订
+                form.on('switch(aStateOf)',function (res) {
+                    console.log(res.elem.checked)
+                        if(res.elem.checked){
+                            aStateOf="on";
+                            $("#yinchang").show()
+                            $("#yinchang2").hide()
+                        }else {
+                            aStateOf="off";
+                            $("#yinchang2").show()
+                            $("#yinchang").hide()
+                        }
+
+
+
+                    return false;
+                })
+
+
+
+
+
+                //监听提交
+                form.on('submit(update)',
+                    function(data) {
+                        //创建基本信息对象
+                        console.log(data.field)
+                        data.field.serialNumber=d.serialNumber
+                        // //提交信息
+                        $.ajax({
+                            url:"/Particulars/updataSignedProject",
+                            type:"post",
+                            data:data.field,
+                            success:function (res) {
+                                if(d.basicProject.astateOf!=aStateOf){
+                                    $.ajax({
+                                        url:"/Basic/updateBasucByserialNumber",
+                                        type:"post",
+                                        data:{
+                                            serialNumber:d.serialNumber,
+                                            aStateOf:aStateOf
+                                        },
+
+                                    })
+                                }
+                                layer.close(layer.index);
+                                window.parent.location.reload();
+                            }
+                        })
+
+
+                        return false;
+                    });
+
+            });
+    }
+</script>
+
+</body>
+
+</html>

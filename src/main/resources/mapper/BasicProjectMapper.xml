@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.BasicProjectMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.BasicProject">
+        <result column="serial_number" property="serialNumber"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_type" property="projectType"/>
+        <result column="gross_amount" property="grossAmount"/>
+        <result column="receipts_amount" property="receiptsAmount"/>
+        <result column="project_progress" property="projectProgress"/>
+        <result column="project_source" property="projectSource"/>
+        <result column="principal" property="principal"/>
+        <result column="start_time" property="startTime"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="project_processing_type" property="projectProcessingType"/>
+        <result column="additional_service" property="additionalService"/>
+        <result column="project_details" property="projectDetails"/>
+        <result column="existing_problem" property="existingProblem"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="owner_name" property="ownerName"/>
+        <result column="collection_ratio" property="collectionRatio"/>
+        <result column="uncollected_proportion" property="uncollectedProportion"/>
+        <result column="invoice_amount" property="invoiceAmount"/>
+        <result column="a_state_of" property="aStateOf"/>
+        <result column="whether_outsourcing" property="whetherOutsourcing"/>
+        <result column="examination" property="examination"/>
+    </resultMap>
+    <sql id="newSel">
+        serial_number,
+        project_name,
+        project_type,
+        gross_amount,
+        project_source,
+        principal,
+        start_time,
+        finish_time,
+        project_processing_type,
+        province,
+        city,
+        area,
+        owner_name,
+        a_state_of,
+        whether_outsourcing
+    </sql>
+    <!-- 查询 -->
+    <!-- 分页查询全部基本信息 -->
+    <select id="selectPage"  resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.BasicProject">
+        select
+        <include refid="newSel" />
+        from basic_project
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != province and province != ''">  province = #{province} and</if>
+            <if test="null != city and city != ''">  city = #{city} and</if>
+            <if test="null != area and area != ''">  area = #{area} and</if>
+            <if test="null != projectProcessingType and projectProcessingType != ''">  project_processing_type = #{projectProcessingType} and</if>
+            <if test="null != projectType and projectType != ''">  project_type = #{projectType} and</if>
+            <if test="null != projectName and projectName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>
+            <if test="null != projectProgress and projectProgress != ''"> project_progress = #{projectProgress} and</if>
+            <if test="null != examination and examination != ''"> examination = #{examination} and</if>
+
+            <!-- project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) -->
+
+        </trim>
+    </select>
+
+
+
+    <!-- 删除 -->
+    <!-- 利用序号删除项目基本表 -->
+    <delete id="deletBasucByserialNumber" parameterType="java.lang.String">
+        DELETE
+        FROM basic_project
+        WHERE serial_number = #{serialNumber}
+    </delete>
+
+    <!-- 修改 -->
+    <!-- 利用序号修改项目基本表 -->
+    <update id="updateBasucByserialNumber" parameterType="com.fjtons.oaglxt.pojo.BasicProject">
+        UPDATE basic_project
+        <set>
+            <if test="null != projectName and projectName != ''">project_name = #{projectName},</if>
+            <if test="null != projectType and projectType != ''">project_type = #{projectType},</if>
+            <if test="null != grossAmount and grossAmount != ''">gross_amount = #{grossAmount},</if>
+            <if test="null != receiptsAmount and receiptsAmount != ''">receipts_amount = #{receiptsAmount},</if>
+            <if test="null != projectProgress and projectProgress != ''">project_progress = #{projectProgress},</if>
+            <if test="null != projectSource and projectSource != ''">project_source = #{projectSource},</if>
+            <if test="null != principal and principal != ''">principal = #{principal},</if>
+            <if test="null != startTime and startTime != ''">start_time = #{startTime},</if>
+            <if test="null != finishTime and finishTime != ''">finish_time = #{finishTime},</if>
+            <if test="null != projectProcessingType and projectProcessingType != ''">  project_processing_type = #{projectProcessingType} ,</if>
+            <if test="null != projectDetails and projectDetails != ''">project_details = #{projectDetails},</if>
+            <if test="null != projectDetails and existingProblem != ''">existing_problem = #{existingProblem},</if>
+            <if test="null != province and province != ''">province = #{province},</if>
+            <if test="null != city and city != ''">city = #{city},</if>
+            <if test="null != area and area != ''">area = #{area},</if>
+            <if test="null != ownerName and ownerName != ''">owner_name = #{ownerName},</if>
+            <if test="null != collectionRatio and collectionRatio != ''">collection_ratio = #{collectionRatio},</if>
+            <if test="null != uncollectedProportion and uncollectedProportion != ''">uncollected_proportion = #{uncollectedProportion},</if>
+            <if test="null != invoiceAmount and invoiceAmount != ''">invoice_amount = #{invoiceAmount},</if>
+            <if test="null != aStateOf and aStateOf != ''">a_state_of = #{aStateOf},</if>
+            <if test="null != whetherOutsourcing and whetherOutsourcing != ''">whether_outsourcing = #{whetherOutsourcing},</if>
+            <if test="null != examination and examination != ''">examination = #{examination},</if>
+        </set>
+        WHERE serial_number = #{serialNumber}
+    </update>
+
+
+    <!-- 添加 -->
+    <insert id="insertBasucByserialNumber"  parameterType="com.fjtons.oaglxt.pojo.BasicProject">
+        INSERT INTO basic_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != serialNumber and "" !=  serialNumber '>
+                `serial_number`,
+            </if>
+            <if test='null != projectName and "" !=  projectName'>
+                `project_name`,
+            </if>
+            <if test='null != projectType and "" !=  projectType'>
+                `project_type`,
+            </if>
+            <if test='null != grossAmount and "" !=  grossAmount '>
+                `gross_amount`,
+            </if>
+            <if test='null != receiptsAmount and "" !=  receiptsAmount'>
+                `receipts_amount`,
+            </if>
+            <if test='null != projectProgress and "" !=  projectProgress'>
+                `project_progress`,
+            </if>
+            <if test='null != projectSource and "" !=  projectSource'>
+                `project_source`,
+            </if>
+            <if test='null != principal and "" !=  principal'>
+                `principal`,
+            </if>
+             <if test='null != startTime and "" !=  startTime'>
+            `start_time`,
+            </if>
+            <if test='null != finishTime and "" !=  finishTime'>
+                `finish_time`,
+            </if>
+            <if test="null != projectProcessingType and projectProcessingType != ''">
+              project_processing_type ,
+              </if>
+            <if test='null != projectDetails and "" !=  projectDetails'>
+                `project_details`,
+            </if>
+            <if test='null != existingProblem and "" !=  existingProblem'>
+                `existing_problem`,
+            </if>
+            <if test='null != province and "" !=  province'>
+                `province`,
+            </if>
+            <if test='null != city and "" !=  city'>
+                `city`,
+            </if>
+            <if test='null != area and "" !=  area'>
+                `area`,
+            </if>
+            <if test='null != ownerName and "" !=  ownerName'>
+                `owner_name`,
+            </if>
+            <if test='null != collectionRatio and "" !=  collectionRatio'>
+                `collection_ratio`,
+            </if>
+            <if test='null != uncollectedProportion and "" !=  uncollectedProportion'>
+                `uncollected_proportion`,
+            </if>
+            <if test='null != invoiceAmount and "" !=  invoiceAmount'>
+                `invoice_amount`,
+            </if>
+            <if test='null != aStateOf and "" !=  aStateOf'>
+                `a_state_of`,
+            </if>
+            <if test='null != whetherOutsourcing and "" != whetherOutsourcing'>
+                `whether_outsourcing`,
+            </if>
+            <if test='null != examination and "" != examination'>
+                `examination`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != serialNumber and "" != serialNumber'>
+                #{serialNumber},
+            </if>
+            <if test='null != projectName and "" != projectName'>
+                #{projectName},
+            </if>
+            <if test='null != projectType and "" != projectType'>
+                #{projectType},
+            </if>
+            <if test='null != grossAmount and "" != grossAmount'>
+                #{grossAmount},
+            </if>
+            <if test='null != receiptsAmount and "" != receiptsAmount'>
+                #{receiptsAmount},
+            </if>
+            <if test='null != projectProgress and "" != projectProgress'>
+                #{projectProgress},
+            </if>
+            <if test='null != projectSource  and "" != projectSource'>
+                #{projectSource},
+            </if>
+            <if test='null != principal and "" != principal'>
+                #{principal},
+            </if>
+            <if test='null != startTime and "" != startTime'>
+                #{startTime},
+            </if>
+            <if test='null != finishTime and "" != finishTime'>
+                #{finishTime},
+            </if>
+            <if test="null != projectProcessingType and projectProcessingType != ''">
+               #{projectProcessingType} ,
+               </if>
+
+            <if test='null != projectDetails and "" != projectDetails'>
+                #{projectDetails},
+            </if>
+            <if test='null != existingProblem and "" != existingProblem'>
+                #{existingProblem},
+            </if>
+            <if test='null != province and "" != province'>
+                #{province},
+            </if>
+            <if test='null != city and "" != city'>
+                #{city} ,
+            </if>
+            <if test='null != area and "" != area'>
+                #{area},
+            </if>
+            <if test='null != ownerName and "" != ownerName'>
+                #{ownerName},
+            </if>
+            <if test='null != collectionRatio and "" != collectionRatio'>
+                #{collectionRatio},
+            </if>
+            <if test='null != uncollectedProportion and "" != uncollectedProportion'>
+                #{uncollectedProportion}
+            </if>
+            <if test='null != invoiceAmount and "" != invoiceAmount'>
+                #{invoiceAmount} ,
+            </if>
+            <if test='null != aStateOf and "" != aStateOf'>
+                #{aStateOf},
+            </if>
+            <if test='null != whetherOutsourcing and "" != whetherOutsourcing'>
+                #{whetherOutsourcing},
+            </if>
+            <if test='null != examination and "" != examination'>
+                #{examination},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>用户添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <link rel="stylesheet" href="/lib/layui/css/modules/laydate/default/laydate.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>账号</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="account"  name="account" placeholder="请输入三到九位的账号" required="" lay-verify="required|changdu" autocomplete="off" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" placeholder="请输入用户姓名" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">用户手机号</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="phone" placeholder="请输入手机号" id="phone" name="phone" required=""  autocomplete="off" class="layui-input" >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">性别</label>
+                <div class="layui-input-inline">
+                 男   <input type="radio" name="sex"  value="1"  lay-filter="sex" checked>
+                  女  <input type="radio" name="sex"  value="2"   lay-filter="sex">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">用户权限</label>
+                <div class="layui-input-inline">
+                    <select id="permissions" name="permissions">
+                        <option value="1">超级管理员</option>
+                        <option value="2">审核人</option>
+                        <option value="3">普通用户</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">部门</label>
+                <div class="layui-input-inline">
+                    <select name="departmentId" id="departmentId" lay-verify="required" lay-search="">
+                    </select>
+                </div>
+            </div>
+            <!-- 部门先等待 -->
+            <div class="layui-form-item">
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="" id="add">增加</button></div>
+        </form>
+    </div>
+</div>
+</body>
+<script>//departmentId
+    layui.use(['form', 'layer','laydate','upload'],
+        function() {
+            var $ = layui.jquery;
+            form = layui.form;
+            var layer = layui.layer;
+            var laydate = layui.laydate;
+            var upload = layui.upload;
+
+            //自定义验证规则
+            form.verify({
+                changdu: function(value, item){ //value：表单的值、item：表单的DOM对象
+                    if(value.length < 3||value.length > 9){
+                        console.log(value)
+                        return '请输入三到九位的账号'
+                    }
+                }
+            });
+            //渲染负责人的信息
+            $.ajax({
+                type:'POST',
+                url:'/Department/sellDepartment',
+                dataType:'json',
+                success:function(data){
+                    var str= "";
+                    for(var key in data){
+                        str += "<option value=\""+data[key].departmentId+"\">"+data[key].departmentName+"</option>";
+                    }
+
+                    $("#departmentId").append(str);
+                    form.render('select');
+                }
+            });
+
+
+
+
+            //监听提交
+            form.on('submit(add)',
+                function(data) {
+                    //创建基本信息对象
+                    $.ajax({
+                        url:"/User/insertUser",
+                        type:"post",
+                        data:data.field,
+                        success:function (res) {
+                            console.log(res)
+                            if(res==1){
+                                layer.msg("添加成功");
+                             //  location.reload();//刷新父页面
+                             //   parent.location.reload();
+                                window.parent.location.reload();
+                            }else if(res==4){
+                                layer.msg("账号重复");
+                            }
+                        }
+                    })
+return false;
+                })
+        })
+            </script>
+</html>

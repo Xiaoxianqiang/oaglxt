@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.SupplierMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.Supplier">
+        <result column="supplier_id" property="supplierId"/>
+        <result column="supplier_name" property="supplierName"/>
+        <result column="supplier_company" property="supplierCompany"/>
+        <result column="project_id" property="projectId"/>
+        <result column="supplier_material_name" property="supplierMaterialName"/>
+        <result column="supplier_after_sales" property="supplierAfterSales"/>
+        <result column="supplier_type" property="supplierType"/>
+        <result column="supplier_contact" property="supplierContact"/>
+        <result column="supplier_contact_phone" property="supplierContactPhone"/>
+    </resultMap>
+    <!-- 查询 -->
+    <!-- 利用项目id查询全部信息 -->
+    <select id="selectPage"  resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.Supplier">
+        select
+            *
+        from supplier
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != supplierId and supplierId != ''">  supplier_id = #{supplierId} and</if>
+            <if test="null != supplierName and supplierName != ''">  supplier_name = #{supplierName} and</if>
+            <if test="null != supplierCompany and supplierCompany != ''">  supplier_company = #{supplierCompany} and</if>
+            <if test="null != projectId and projectId != ''">  project_id = #{projectId} and</if>
+<!--            <if test="null != supplierMaterialName and supplierMaterialName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>-->
+            <if test="null != supplierMaterialName and supplierMaterialName != ''"> supplier_material_name = #{supplierMaterialName} and</if>
+            <if test="null != supplierAfterSales and supplierAfterSales != ''"> supplier_after_sales = #{supplierAfterSales} and</if>
+            <if test="null != supplierType and supplierType != ''"> supplier_type = #{supplierType} and</if>
+            <if test="null != supplierContact and supplierContact != ''"> supplier_contact = #{supplierContact} and</if>
+            <if test="null != supplierContactPhone and supplierContactPhone != ''"> supplier_contact_phone = #{supplierContactPhone} and</if>
+        </trim>
+    </select>
+    <!-- 删除 -->
+    <!-- 利用序号删除项目基本表 -->
+    <delete id="deleteSupplierId" parameterType="int">
+        delete from supplier where supplier_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 修改 -->
+    <!-- 利用序号修改项目基本表 -->
+    <update id="updateSupplier" parameterType="com.fjtons.oaglxt.pojo.Supplier">
+        UPDATE supplier
+        <set>
+            <if test="null != supplierName and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="null != supplierCompany and supplierCompany != ''">supplier_company = #{supplierCompany},</if>
+            <if test="null != projectId and projectId != ''">project_id = #{projectId},</if>
+            <if test="null != supplierMaterialName and supplierMaterialName != ''">supplier_material_name = #{supplierMaterialName},</if>
+            <if test="null != supplierAfterSales and supplierAfterSales != ''">supplier_after_sales = #{supplierAfterSales},</if>
+            <if test="null != supplierType and supplierType != ''">supplier_type = #{supplierType},</if>
+            <if test="null != supplierContact and supplierContact != ''">supplier_contact = #{supplierContact},</if>
+            <if test="null != supplierContactPhone and supplierContactPhone != ''">supplier_contact_phone = #{supplierContactPhone},</if>
+        </set>
+        WHERE supplier_id = #{supplierId}
+    </update>
+
+
+    <!-- 添加 -->
+    <insert id="insertSupplier"  parameterType="com.fjtons.oaglxt.pojo.Supplier">
+        INSERT INTO supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != supplierId and "" !=  supplierId '>
+                `supplier_id`,
+            </if>
+            <if test='null != supplierName and "" !=  supplierName'>
+                `supplier_name`,
+            </if>
+            <if test='null != supplierCompany and "" !=  supplierCompany'>
+                `supplier_company`,
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                `project_id`,
+            </if>
+            <if test='null != supplierMaterialName and "" !=  supplierMaterialName'>
+                `supplier_material_name`,
+            </if>
+            <if test='null != supplierAfterSales and "" !=  supplierAfterSales'>
+                `supplier_after_sales`,
+            </if>
+            <if test='null != supplierType and "" !=  supplierType'>
+                `supplier_type`,
+            </if>
+            <if test='null != supplierContact and "" !=  supplierContact'>
+                `supplier_contact`,
+            </if>
+            <if test='null != supplierContactPhone and "" !=  supplierContactPhone'>
+                `supplier_contact_phone`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != supplierId and "" != supplierId'>
+                #{supplierId},
+            </if>
+            <if test='null != supplierName and "" !=  supplierName'>
+                #{supplierName},
+            </if>
+            <if test='null != supplierCompany and "" !=  supplierCompany'>
+                #{supplierCompany},
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                #{projectId},
+            </if>
+            <if test='null != supplierMaterialName and "" !=  supplierMaterialName'>
+                #{supplierMaterialName},
+            </if>
+            <if test='null != supplierAfterSales and "" !=  supplierAfterSales'>
+                #{supplierAfterSales},
+            </if>
+            <if test='null != supplierType and "" !=  supplierType'>
+                #{supplierType},
+            </if>
+            <if test='null != supplierContact and "" !=  supplierContact'>
+                #{supplierContact},
+            </if>
+            <if test='null != supplierContactPhone and "" !=  supplierContactPhone'>
+                #{supplierContactPhone},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

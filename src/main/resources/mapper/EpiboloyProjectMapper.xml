@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.EpibolyProjectMapper">
+
+    <!-- 外包的所有信息 -->
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.OutsourcingProject">
+        <result column="serial_number" property="serialNumber"/>
+        <result column="project_name" property="projectName"/>
+        <result column="industry_type" property="industryType"/>
+        <result column="outsourcing_unit" property="outsourcingUnit"/>
+        <result column="epiboly_money" property="epibolyMoney"/>
+        <result column="gross_amount" property="grossAmount"/>
+        <result column="project_balance" property="projectBalance"/>
+        <result column="advance" property="advance"/>
+        <result column="arrival_money" property="arrivalMoney"/>
+        <result column="install_money" property="installMoney"/>
+        <result column="accept_money" property="acceptMoney"/>
+        <result column="cash_deposit" property="cashDeposit"/>
+        <result column="business_expense" property="businessExpense"/>
+        <result column="self_control" property="selfControl"/>
+        <result column="technology" property="technology"/>
+        <association property="basicProject" javaType="com.fjtons.oaglxt.pojo.BasicProject">
+            <result column="project_type" property="projectType"/>
+            <result column="receipts_amount" property="receiptsAmount"/>
+            <result column="project_source" property="projectSource"/>
+            <result column="principal" property="principal"/>
+            <result column="start_time" property="startTime"/>
+            <result column="finish_time" property="finishTime"/>
+            <result column="project_processing_type" property="projectProcessingType"/>
+            <result column="additional_service" property="additionalService"/>
+            <result column="project_details" property="projectDetails"/>
+            <result column="existing_problem" property="existingProblem"/>
+            <result column="province" property="province"/>
+            <result column="city" property="city"/>
+            <result column="area" property="area"/>
+            <result column="owner_name" property="ownerName"/>
+            <result column="a_state_of" property="aStateOf"/>
+            <result column="whether_outsourcing" property="whetherOutsourcing"/>
+        </association>
+    </resultMap>
+
+    <sql id="newSel">
+
+    </sql>
+    <!-- 查询  -->
+    <select id="selectPage" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.BasicProject">
+         SELECT *
+        FROM     epiboly_project AS e
+		LeFT  JOIN basic_project AS b
+ 		ON  b.serial_number=e.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != projectName and projectName != ''"> b.project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>
+            <if test="null != projectType and projectType != ''"> b.project_type = #{projectType} and</if>
+            <if test="null != projectProcessingType and projectProcessingType != ''"> b.project_processing_type = #{projectProcessingType} and</if>
+            b.whether_outsourcing="on" and b.examination="1"
+        </trim>
+    </select>
+    <!-- 插入 -->
+    <!-- 汇总创建对象时自动插入数据 -->
+    <insert id="insetByOutsourcingProject" parameterType="com.fjtons.oaglxt.pojo.OutsourcingProject">
+          INSERT INTO epiboly_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != serialNumber and "" !=  serialNumber '>
+                `serial_number`,
+            </if>
+            <if test='null != projectName and "" !=  projectName'>
+                `project_name`,
+            </if>
+            <if test='null != industryType and "" !=  industryType'>
+                `industry_type`,
+            </if>
+            <if test='null != outsourcingUnit and "" !=  outsourcingUnit'>
+                `outsourcing_unit`,
+            </if>
+            <if test='null != epibolyMoney and "" !=  epibolyMoney'>
+                `epiboly_money`,
+            </if>
+            <if test='null != grossAmount and "" !=  grossAmount'>
+                `gross_amount`,
+            </if>
+            <if test='null != projectBalance and "" !=  projectBalance'>
+                `project_balance`,
+            </if>
+            <if test='null != advance and "" !=  advance'>
+                `advance`,
+            </if>
+            <if test='null != arrivalMoney and "" !=  arrivalMoney'>
+                `arrival_money`,
+            </if>
+            <if test='null != installMoney and "" !=  installMoney'>
+                `install_money`,
+            </if>
+            <if test='null != acceptMoney and "" !=  acceptMoney'>
+                `accept_money`,
+            </if>
+            <if test='null != cashDeposit and "" !=  cashDeposit'>
+                `cash_deposit`,
+            </if>
+            <if test='null != businessExpense and "" !=  businessExpense'>
+                `business_expense`,
+            </if>
+            <if test='null != selfControl and "" !=  selfControl'>
+                `self_control`,
+            </if>
+            <if test='null != technology and "" !=  technology'>
+                `technology`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != serialNumber and "" !=  serialNumber '>
+               #{serialNumber},
+            </if>
+            <if test='null != projectName and "" !=  projectName'>
+                #{projectName},
+            </if>
+            <if test='null != industryType and "" !=  industryType'>
+                #{industryType},
+            </if>
+            <if test='null != outsourcingUnit and "" !=  outsourcingUnit'>
+                #{outsourcingUnit},
+            </if>
+            <if test='null != epibolyMoney and "" !=  epibolyMoney'>
+                #{epibolyMoney},
+            </if>
+            <if test='null != grossAmount and "" !=  grossAmount'>
+                #{grossAmount},
+            </if>
+            <if test='null != projectBalance and "" !=  projectBalance'>
+                #{projectBalance},
+            </if>
+            <if test='null != advance and "" !=  advance'>
+                #{advance},
+            </if>
+            <if test='null != arrivalMoney and "" !=  arrivalMoney'>
+                #{arrivalMoney},
+            </if>
+            <if test='null != installMoney and "" !=  installMoney'>
+                #{installMoney},
+            </if>
+            <if test='null != acceptMoney and "" !=  acceptMoney'>
+                #{acceptMoney},
+            </if>
+            <if test='null != cashDeposit and "" !=  cashDeposit'>
+                #{cashDeposit},
+            </if>
+            <if test='null != businessExpense and "" !=  businessExpense'>
+                #{businessExpense},
+            </if>
+            <if test='null != selfControl and "" !=  selfControl'>
+                #{selfControl},
+            </if>
+            <if test='null != technology and "" !=  technology'>
+                #{technology},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updataByOutsourcingProject" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+        UPDATE epiboly_project
+        <set>
+            <if test="null != projectName and projectName != ''">project_name = #{projectName},</if>
+            <if test="null != industryType and industryType != ''">industry_type = #{industryType},</if>
+            <if test="null != outsourcingUnit and outsourcingUnit != ''">outsourcing_unit = #{outsourcingUnit},</if>
+            <if test="null != projectBalance and projectBalance != ''">project_balance = #{projectBalance},</if>
+            <if test="null != grossAmount and grossAmount != ''">gross_amount = #{grossAmount},</if>
+            <if test="null != projectBalance and projectBalance != ''">project_balance = #{projectBalance},</if>
+            <if test="null != advance and advance != ''">advance = #{advance},</if>
+            <if test="null != arrivalMoney and arrivalMoney != ''">arrival_money = #{arrivalMoney},</if>
+            <if test="null != installMoney and installMoney != ''">install_money = #{installMoney},</if>
+            <if test="null != acceptMoney and acceptMoney != ''">accept_money = #{acceptMoney},</if>
+            <if test="null != cashDeposit and cashDeposit != ''">cash_deposit = #{cashDeposit},</if>
+            <if test="null != businessExpense and businessExpense != ''">business_expense = #{businessExpense},</if>
+            <if test="null != selfControl and selfControl != ''">self_control = #{selfControl},</if>
+            <if test="null != technology and technology != ''">technology = #{technology},</if>
+
+
+        </set>
+        WHERE serial_number = #{serialNumber}
+    </update>
+    <delete id="deletBySerialNumber" parameterType="java.lang.String">
+       DELETE
+            FROM epiboly_project
+            WHERE serial_number = #{serialNumber}
+    </delete>
+
+</mapper>

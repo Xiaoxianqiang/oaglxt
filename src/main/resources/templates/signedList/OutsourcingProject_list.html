@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <label class="layui-inline">项目类型:</label>
+                            <div class="layui-input-inline">
+                                <select name="projectType" lay-filter="">
+                                    <option value="">无</option>
+                                    <option value="政府采购服务项目">政府采购服务项目</option>
+                                    <option value="在线运营">在线运营</option>
+                                    <option value="在线工程">在线工程</option>
+                                    <option value="废气运营项目">废气运营项目</option>
+                                    <option value="废水运营项目">废水运营项目</option>
+                                    <option value="废气项目">废气项目</option>
+                                    <option value="废水项目">废水项目</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline layui-show-xs-block">
+                            <label  class="layui-form-label">  项目处理类型</label>
+                            <div class="layui-input-inline">
+                                <select id="projectProcessingType" name="projectProcessingType" lay-filter="">
+                                    <option value="">无</option>-->
+                                    <option value="仅设备采购">仅设备采购</option>
+                                    <option value="设计施工">设计施工</option>
+                                    <option value="仅施工">仅施工</option>
+                                    <option value="仅设计监理">仅设计监理</option>
+                                    <option value="仅监理">仅监理</option>
+                                    <option value="仅设计">仅设计</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="projectName" placeholder="请输入工程名称" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                        <!--                                <div class="layui-inline layui-show-xs-block">-->
+                        <!--                                    <input class="layui-input" type="checkbox" name="01" title="仅账号人相关项目"  id="permissions" ></div>-->
+
+                    </form>
+                </div>
+                <div class="layui-card-body ">
+                    <table class="layui-table" lay-filter="test" id="demo">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- 引入城市插件 -->
+<script type="text/javascript" src="/js/xcity.js"></script>
+<!-- 行内事件模板 -->
+<script type="text/html"  id="hangnei" >
+    <a title="编辑"  href="javascript:;" lay-event="updata"><!--   onclick="xadmin.open('编辑','basicproject-update.html',900,700)" -->
+        <i class="layui-icon">&#xe642;</i>
+    </a>
+    <!--        <a onclick="xadmin.open('修改密码','member-password.html',600,400)" title="修改密码" href="javascript:;">-->
+    <!--            <i class="layui-icon">&#xe631;</i>-->
+    <!--        </a>-->
+    <a title="删除"   lay-event="delet"  href="javascript:;">
+        <i class="layui-icon">&#xe640;</i>
+    </a>
+</script>
+<!-- 表头部事件 -->
+<script type="text/html" id="toolbarDemo">
+    <div class = "layui-btn-container" >
+<!--        <button type="button" class="layui-btn layui-btn-sm" onclick="xadmin.open('添加','/basicprojectList/basicproject-add.html',900,700)"   >-->
+<!--            <i class="layui-icon">&#xe608;</i> 添加-->
+<!--        </button>-->
+        <!-- 批量删除 -->
+        <button type="button" class="layui-btn layui-btn-sm  layui-btn-danger"  lay-event = "isAll">
+            <i class="layui-icon">&#xe640;</i> 批量删除
+        </button>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+        </a>
+        <!--            <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button >-->
+        <!--            <button class = "layui-btn layui-btn-sm" lay-event = "isAll" > 验证是否全选</button>-->
+    </div >
+</script>
+<!-- 表内查看事件 -->
+<script  type="text/html" id="chakan">
+    <a  lay-event="cha" imgsrc="{{d.photosForFiling}}"  style="width: 100%;text-align: center;display: block;text-decoration:underline">查看</a>
+</script>
+<script>layui.use(['table','form','jquery'],
+    function() {
+        var    table = layui.table;
+        form=layui.form;
+        $= layui.jquery;
+        //监听单元格编辑
+        table.on('edit(test)',
+            function(obj) {
+                var value = obj.value //得到修改后的值
+                    ,
+                    data = obj.data //得到所在行所有键值
+                    ,
+                    field = obj.field; //得到字段
+                layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+            });
+
+        //引入城市插件
+        $('#chenshi').xcity();
+
+        //监听行内操作事件
+        table.on('tool(test)', function (obj) {
+            var layEvent = obj.event;
+            var xuhao=obj.data.serialNumber
+            if (layEvent === 'delet') {//删除事件
+                //console.log(obj.data.serialNumber)//删除的序号
+                $.post("/Epiboloy/deletBySerialNumber",{xuhao:xuhao},function () {
+                    location.reload()
+                })
+            }else if(layEvent == 'updata'){
+                layer.open({
+                    title: "编辑",
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['900px', '700px'], //宽高
+                    maxmin: true, //开启最大化最小化按钮
+                    shadeClose:true,
+                    content: "/signedList/outsourcingProject_update.html",
+                    success: function (layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.child(obj.data);
+                    }
+                })
+            }else if(layEvent == 'cha'){//图片查看
+                var photos=obj.data.photosForFiling//该字段已经删除，重新添加
+                if(photos){}else {
+                    layer.msg("暂无图片")
+                }
+
+            }
+        })
+
+
+
+
+        //初始化列表  outsourcingProject_update.html
+        var  tableIns=table.render({
+            elem: '#demo' //指定原始表格元素选择器（推荐id选择器）
+            ,id:'test'
+            ,url:'/Epiboloy/selectPage'
+            ,page: true //开启分页
+            ,toolbar:'#toolbarDemo'
+            ,cols:[//中括号必须隔开
+                [ //表头
+                    {type: 'checkbox' ,fixed:"left"}
+                    ,{field:'serialNumber', width:130, sort: true,title:"序号"}
+                    ,  {field:'projectName',  title:"项目名称"}
+                    ,{field:'industryType', title:"行业类别"}
+                    ,{field:'outsourcingUnit', title:"外包单位" }
+                    ,{field:'epibolyMoney',  title:"外包金额"}
+                    ,{field:'grossAmount',  title:"总金额"}
+                    ,{field:'projectBalance',  title:"差额"}
+                    , {field:'advance',  width: 120,title:"预付款"}
+                    , {field:'arrivalMoney',  width: 120,title:"到货款"}
+                    , {field:'installMoney',  width: 120,title:"安装款"}
+                    ,  {field:'acceptMoney',  width: 120,title:"验收款"}
+                    , {field:'cashDeposit',  width: 120,title:"保证金"}
+                    ,  {field:'businessExpense',  width: 120,title:"业务支出"}
+                    ,{field:'selfControl',  title:"自控"}
+                    ,{field:'technology',  title:"工艺"}
+                    ,{templet:"#hangnei", title:"操作"}
+                ]
+            ],//设置表头
+        });
+
+        //监听搜索框
+        form.on('submit(sreach)',function(data){
+            console.log(data.field);
+            tableIns.reload({
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)',
+            function(obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    //添加样式
+                    case 'cha':
+                        console.log("点击")
+                        break;
+                    case 'isAll':
+                        var data = checkStatus.data;
+                        //拿出序号的数组
+                        var xuhao=new Array();
+                        for (var i=0;i<data.length;i++){
+                            xuhao.push(data[i].serialNumber)
+                        }
+                        if(checkStatus.data.length==0){
+                            layer.msg("未选中")
+                        }else {
+                            //确定是否删除
+                            layer.confirm("确定删除嘛",{title:"批量删除"},function () {
+                                // layer.alert(JSON.stringify(data));//    /Basic/deletBasicProjectList
+                                console.log(xuhao)//serialNumber
+                                $.ajax({
+                                    type: "post",
+                                    url: "/Epiboloy/deletBySerialNumberList",
+                                    traditional: true,//开启后台数组转化
+                                    data: {lists: xuhao}, //把前台变量传入后台处理
+                                    success:function () {
+                                        location.reload()
+                                        layer.msg("删除成功")
+                                    }
+                                });
+
+                            })
+                        }
+                        break;
+                };
+            });
+    });</script>
+
+</html>

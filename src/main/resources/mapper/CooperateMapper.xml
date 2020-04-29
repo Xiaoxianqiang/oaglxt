@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.CooperateMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.Cooperate">
+        <result column="cooperate_id" property="cooperateId"/>
+        <result column="cooperate_name" property="cooperateName"/>
+        <result column="cooperate_company" property="cooperateCompany"/>
+        <result column="cooperate_type" property="cooperateType"/>
+        <result column="project_id" property="projectId"/>
+        <result column="cooperate_company_name" property="cooperateCompanyName"/>
+        <result column="cooperate_contact" property="cooperateContact"/>
+        <result column="cooperate_contact_phone" property="cooperateContactPhone"/>
+        <result column="cooperate_quality" property="cooperateQuality"/>
+    </resultMap>
+    <!-- 查询 -->
+    <!-- 利用项目id查询全部信息 -->
+    <select id="selectPage"  resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.Cooperate">
+        select
+            *
+        from cooperate
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != cooperateId and cooperateId != ''">  cooperate_id = #{cooperateId} and</if>
+            <if test="null != cooperateName and cooperateName != ''">  cooperate_name = #{cooperateName} and</if>
+            <if test="null != cooperateCompany and cooperateCompany != ''">  cooperate_company = #{cooperateCompany} and</if>
+            <if test="null != cooperateType and cooperateType != ''">  cooperate_type = #{cooperateType} and</if>
+<!--            <if test="null != supplierMaterialName and supplierMaterialName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>-->
+            <if test="null != projectId and projectId != ''"> project_id = #{projectId} and</if>
+            <if test="null != cooperateCompanyName and cooperateCompanyName != ''"> cooperate_company_name = #{cooperateCompanyName} and</if>
+            <if test="null != cooperateContact and cooperateContact != ''"> cooperate_contact = #{cooperateContact} and</if>
+            <if test="null != cooperateContactPhone and cooperateContactPhone != ''"> cooperate_contact_phone = #{cooperateContactPhone} and</if>
+            <if test="null != cooperateQuality and cooperateQuality != ''"> cooperate_quality = #{cooperateQuality} and</if>
+        </trim>
+    </select>
+    <!-- 删除 -->
+    <!-- 利用序号删除项目基本表 -->
+    <delete id="deleteCooperateId" parameterType="int">
+        delete from cooperate where cooperate_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 修改 -->
+    <!-- 利用序号修改项目基本表 -->
+    <update id="updateCooperater" parameterType="com.fjtons.oaglxt.pojo.Cooperate">
+        UPDATE cooperate
+        <set>
+            <if test="null != cooperateName and cooperateName != ''">  cooperate_name = #{cooperateName} ,</if>
+            <if test="null != cooperateCompany and cooperateCompany != ''">  cooperate_company = #{cooperateCompany} ,</if>
+            <if test="null != cooperateType and cooperateType != ''">  cooperate_type = #{cooperateType} ,</if>
+            <!--            <if test="null != supplierMaterialName and supplierMaterialName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>-->
+            <if test="null != projectId and projectId != ''"> project_id = #{projectId} ,</if>
+            <if test="null != cooperateCompanyName and cooperateCompanyName != ''"> cooperate_company_name = #{cooperateCompanyName} ,</if>
+            <if test="null != cooperateContact and cooperateContact != ''"> cooperate_contact = #{cooperateContact} ,</if>
+            <if test="null != cooperateContactPhone and cooperateContactPhone != ''"> cooperate_contact_phone = #{cooperateContactPhone} ,</if>
+            <if test="null != cooperateQuality and cooperateQuality != ''"> cooperate_quality = #{cooperateQuality} ,</if>
+        </set>
+        WHERE cooperate_id = #{cooperateId}
+    </update>
+
+
+    <!-- 添加 -->
+    <insert id="insertCooperate"  parameterType="com.fjtons.oaglxt.pojo.Cooperate">
+        INSERT INTO cooperate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != cooperateId and "" !=  cooperateId '>
+                `cooperate_id`,
+            </if>
+            <if test='null != cooperateName and "" !=  cooperateName'>
+                `cooperate_name`,
+            </if>
+            <if test='null != cooperateCompany and "" !=  cooperateCompany'>
+                `cooperate_company`,
+            </if>
+            <if test='null != cooperateType and "" !=  cooperateType'>
+                `cooperate_type`,
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                `project_id`,
+            </if>
+            <if test='null != cooperateCompanyName and "" !=  cooperateCompanyName'>
+                `cooperate_company_name`,
+            </if>
+            <if test='null != cooperateContact and "" !=  cooperateContact'>
+                `cooperate_contact`,
+            </if>
+            <if test='null != cooperateContactPhone and "" !=  cooperateContactPhone'>
+                `cooperate_contact_phone`,
+            </if>
+            <if test='null != cooperateQuality and "" !=  cooperateQuality'>
+                `cooperate_quality`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != cooperateId and "" !=  cooperateId '>
+                #{cooperateId},
+            </if>
+            <if test='null != cooperateName and "" !=  cooperateName'>
+                #{cooperateName},
+            </if>
+            <if test='null != cooperateCompany and "" !=  cooperateCompany'>
+                #{cooperateCompany},
+            </if>
+            <if test='null != cooperateType and "" !=  cooperateType'>
+                #{cooperateType},
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                #{projectId},
+            </if>
+            <if test='null != cooperateCompanyName and "" !=  cooperateCompanyName'>
+                #{cooperateCompanyName},
+            </if>
+            <if test='null != cooperateContact and "" !=  cooperateContact'>
+                #{cooperateContact},
+            </if>
+            <if test='null != cooperateContactPhone and "" !=  cooperateContactPhone'>
+                #{cooperateContactPhone},
+            </if>
+            <if test='null != cooperateQuality and "" !=  cooperateQuality'>
+                #{cooperateQuality},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

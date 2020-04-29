@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.User">
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex"/>
+        <result column="regtime" property="regtime"/>
+        <result column="phone" property="phone"/>
+        <result column="permissions" property="permissions"/>
+        <association property="department" javaType="com.fjtons.oaglxt.pojo.Department">
+            <result column="department_id" property="departmentId"/>
+            <result column="department_name" property="departmentName"/>
+        </association>
+    </resultMap>
+
+
+    <!-- 利用账号查找用户是否存在 -->
+    <select id="queryUserByAccount" parameterType="java.lang.String" resultType="com.fjtons.oaglxt.pojo.User">
+        SELECT  *  FROM  user where account=#{account}
+    </select>
+    <!-- 利用电话查找用户是否存在 -->
+    <select id="queryUserByPhone" parameterType="java.lang.String" resultType="com.fjtons.oaglxt.pojo.User">
+        SELECT  *  FROM  user where phone=#{phone}
+    </select>
+    <!-- 获取可以负责的用户 -->
+    <select id="queryUserResponsible" resultMap="BaseResultMap">
+        select  * from  user where permissions !=3
+    </select>
+<!--     查看所有用户  -->
+    <select id="selAllUser" resultMap="BaseResultMap"  parameterType="com.fjtons.oaglxt.pojo.User">
+        select  *  from  user  u LeFT  JOIN  department d ON   u.department_id=d.department_id
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != name and name != ''"> name LIKE  CONCAT('%',CONCAT(#{name},'%')) and</if>
+            <if test="null != account and account != ''">account =  #{account} and</if>
+        </trim>
+    </select>
+
+
+
+    <!-- 利用账号修改信息 -->
+    <update id="updateUser" parameterType="com.fjtons.oaglxt.pojo.User">
+        update user
+        <set>
+            <if test='null != password'>password = #{password},</if>
+            <if test='null != name'> name = #{name},</if>
+            <if test='null != sex'>sex = #{sex},</if>
+            <if test='null != regtime'>regtime = #{regtime},</if>
+            <if test='null != phone'>phone = #{phone},</if>
+            <if test='null != departmentId'>department_id = #{departmentId},</if>
+        </set>
+        where account = #{account}
+    </update>
+    <!-- 添加用户-->
+    <insert id="insertUser" parameterType="com.fjtons.oaglxt.pojo.User">
+        insert  INTO user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != account and "" !=  account '>
+                `account`,
+            </if>
+            <if test='null != password and "" !=  password '>
+                `password`,
+            </if>
+            <if test='null != name and "" !=  name '>
+                `name`,
+            </if>
+            <if test='null != sex and "" !=  sex '>
+                `sex`,
+            </if>
+            <if test='null != regtime and "" !=  regtime '>
+                `regtime`,
+            </if>
+            <if test='null != phone and "" !=  phone '>
+                `phone`,
+            </if>
+            <if test='null != permissions and "" !=  permissions '>
+                `permissions`,
+            </if>
+            <if test='null != departmentId and "" !=  departmentId '>
+                `department_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != account and "" !=  account '>
+                #{account},
+            </if>
+            <if test='null != password and "" !=  password '>
+                #{password},
+            </if>
+            <if test='null != name and "" !=  name '>
+                #{name},
+            </if>
+            <if test='null != sex and "" !=  sex '>
+                #{sex},
+            </if>
+            <if test='null != regtime and "" !=  regtime '>
+                #{regtime},
+            </if>
+            <if test='null != phone and "" !=  phone '>
+                #{phone},
+            </if>
+            <if test='null != permissions and "" !=  permissions '>
+                #{permissions},
+            </if>
+            <if test='null != departmentId and "" !=  departmentId '>
+                #{departmentId},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteArrayUser" parameterType="int">
+        delete from user where account in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.TaskAllocationMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.TaskAllocation">
+        <result column="task_allocation_id" property="taskAllocationId"/>
+        <result column="task_allocation_name" property="taskAllocationName"/>
+        <result column="task_allocation_output" property="taskAllocationOutput"/>
+        <result column="task_allocation_personnel" property="taskAllocationPersonnel"/>
+        <result column="task_allocation_signed" property="taskAllocationSigned"/>
+        <result column="task_allocation_type" property="taskAllocationType"/>
+        <result column="task_allocation_note" property="taskAllocationNote"/>
+        <result column="project_id" property="projectId"/>
+    </resultMap>
+    <!-- 查询 -->
+    <!-- 利用项目id查询全部信息 -->
+    <select id="selectPage"  resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.TaskAllocation">
+        select
+            *
+        from task_allocation
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != taskAllocationId and taskAllocationId != ''">  task_allocation_id = #{taskAllocationId} and</if>
+            <if test="null != taskAllocationName and taskAllocationName != ''">  task_allocation_name = #{taskAllocationName} and</if>
+            <if test="null != taskAllocationPersonnel and taskAllocationPersonnel != ''">  task_allocation_personnel = #{taskAllocationPersonnel} and</if>
+<!--            <if test="null != supplierMaterialName and supplierMaterialName != ''"> project_name LIKE  CONCAT('%',CONCAT(#{projectName},'%')) and</if>-->
+            <if test="null != taskAllocationSigned and taskAllocationSigned != ''"> task_allocation_signed = #{taskAllocationSigned} and</if>
+            <if test="null != taskAllocationType and taskAllocationType != ''"> task_allocation_type = #{taskAllocationType} and</if>
+            <if test="null != taskAllocationNote and taskAllocationNote != ''"> task_allocation_note = #{taskAllocationNote} and</if>
+            <if test="null != taskAllocationOutput and taskAllocationOutput != ''"> task_allocation_output = #{taskAllocationOutput} and</if>
+            <if test="null != projectId and projectId != ''">  project_id = #{projectId} and</if>
+        </trim>
+    </select>
+    <!-- 删除 -->
+    <!-- 利用序号删除项目基本表 -->
+    <delete id="deleteTaskAllocationId" parameterType="int">
+        delete from task_allocation where task_allocation_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 修改 -->
+    <!-- 利用序号修改项目基本表 -->
+    <update id="updateTaskAllocation" parameterType="com.fjtons.oaglxt.pojo.TaskAllocation">
+        UPDATE task_allocation
+        <set>
+            <if test="null != taskAllocationName and taskAllocationName != ''">  task_allocation_name = #{taskAllocationName} ,</if>
+            <if test="null != taskAllocationPersonnel and taskAllocationPersonnel != ''">  task_allocation_personnel = #{taskAllocationPersonnel} ,</if>
+            <if test="null != taskAllocationSigned and taskAllocationSigned != ''"> task_allocation_signed = #{taskAllocationSigned} ,</if>
+            <if test="null != taskAllocationType and taskAllocationType != ''"> task_allocation_type = #{taskAllocationType} ,</if>
+            <if test="null != taskAllocationNote and taskAllocationNote != ''"> task_allocation_note = #{taskAllocationNote} ,</if>
+            <if test="null != taskAllocationOutput and taskAllocationOutput != ''"> task_allocation_output = #{taskAllocationOutput} ,</if>
+            <if test="null != projectId and projectId != ''">  project_id = #{projectId} ,</if>
+        </set>
+        WHERE task_allocation_id = #{taskAllocationId}
+    </update>
+
+
+    <!-- 添加 -->
+    <insert id="insertTaskAllocation"  parameterType="com.fjtons.oaglxt.pojo.TaskAllocation">
+        INSERT INTO task_allocation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != taskAllocationId and "" !=  taskAllocationId '>
+                `task_allocation_id`,
+            </if>
+            <if test='null != taskAllocationName and "" !=  taskAllocationName'>
+                `task_allocation_name`,
+            </if>
+            <if test='null != taskAllocationOutput and "" !=  taskAllocationOutput'>
+                `task_allocation_output`,
+            </if>
+            <if test='null != taskAllocationPersonnel and "" !=  taskAllocationPersonnel'>
+                `task_allocation_personnel`,
+            </if>
+            <if test='null != taskAllocationSigned and "" !=  taskAllocationSigned'>
+                `task_allocation_signed`,
+            </if>
+            <if test='null != taskAllocationType and "" !=  taskAllocationType'>
+                `task_allocation_type`,
+            </if>
+            <if test='null != taskAllocationNote and "" !=  taskAllocationNote'>
+                `task_allocation_note`,
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                `project_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != taskAllocationId and "" !=  taskAllocationId '>
+                #{taskAllocationId},
+            </if>
+            <if test='null != taskAllocationName and "" !=  taskAllocationName'>
+                #{taskAllocationName},
+            </if>
+            <if test='null != taskAllocationOutput and "" !=  taskAllocationOutput'>
+                #{taskAllocationOutput},
+            </if>
+            <if test='null != taskAllocationPersonnel and "" !=  taskAllocationPersonnel'>
+                #{taskAllocationPersonnel},
+            </if>
+            <if test='null != taskAllocationSigned and "" !=  taskAllocationSigned'>
+                #{taskAllocationSigned},
+            </if>
+            <if test='null != taskAllocationType and "" !=  taskAllocationType'>
+                #{taskAllocationType},
+            </if>
+            <if test='null != taskAllocationNote and "" !=  taskAllocationNote'>
+                #{taskAllocationNote},
+            </if>
+            <if test='null != projectId and "" !=  projectId '>
+                #{projectId},
+            </if>
+
+        </trim>
+    </insert>
+
+</mapper>

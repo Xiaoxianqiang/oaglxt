@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>任务分配添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <link rel="stylesheet" href="/lib/layui/css/modules/laydate/default/laydate.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="layui-form-label">分配名称</label>
+                <div class="layui-input-inline">
+                    <select id="taskAllocationName"  lay-filter="" required="" >
+                        <optgroup label="管理/协调和前期跟踪/技术支持">
+                            <option value="跟踪支持">跟踪支持</option>
+                            <option value="管理协调">管理协调</option>
+                        </optgroup>
+                        <optgroup label="方案设计阶段">
+                            <option value="方案设计">方案设计</option>
+                        </optgroup>
+                        <optgroup label="工程制作阶段">
+                            <option value="原理图设计">原理图设计</option>
+                            <option value="施工计划/设计">施工计划/设计</option>
+                            <option value="标书制作">标书制作</option>
+                            <option value="项目准备">项目准备</option>
+                            <option value="配水系统加工">配水系统加工</option>
+                        </optgroup>
+                        <optgroup label="工程施工/安装、调试">
+                            <option value="现场管理">现场管理</option>
+                            <option value="施工/设备安装">施工/设备安装</option>
+                            <option value="设备调试">设备调试</option>
+                            <option value="系统调试">系统调试</option>
+                        </optgroup>
+                        <optgroup label="工程验收">
+                            <option value="工程验收">工程验收</option>
+                        </optgroup>
+                        <optgroup label="采购、发货">
+                            <option value="采购、发货">采购、发货</option>
+                        </optgroup>
+                        <optgroup label="调配部分">
+                            <option value="调配部分">调配部分</option>
+                        </optgroup>
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">输出情况</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="taskAllocationOutput"  name="taskAllocationOutput"  required="" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">人员</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="taskAllocationPersonnel"  name="taskAllocationPersonnel"  required="" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">是否签订</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" name="taskAllocationSigned" id="taskAllocationSigned" checked lay-skin="switch" lay-text="签订|未签订"  lay-filter="taskAllocationSigned">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label  class="layui-form-label">项目类型</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="taskAllocationType"  name="taskAllocationType"  required="" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">备注</label>
+                <div class="layui-input-inline">
+                    <textarea type="text" id="taskAllocationNote"  name="taskAllocationNote"  autocomplete="off" class="layui-textarea">
+                    </textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="" id="add">修改</button></div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    function child(d){
+        console.log(d)
+        layui.use(['form', 'layer','laydate','upload'],
+            function() {
+                var $ = layui.jquery;
+                form = layui.form;
+                var layer = layui.layer;
+                var laydate = layui.laydate;
+                var upload = layui.upload;
+                $("#taskAllocationOutput").val(d.taskAllocationOutput)
+                $("#taskAllocationPersonnel").val(d.taskAllocationPersonnel)
+                $("#taskAllocationType").val(d.taskAllocationType)
+                $("#taskAllocationNote").val(d.taskAllocationNote)
+                $("#taskAllocationName").find("option[value="+d.taskAllocationName+"]").attr("selected","selected");//项目处理类型
+                //是否签订
+                //是否签订
+                if(d.taskAllocationSigned=="on"){
+                    form.render(null, 'taskAllocationSigned');
+                }else {
+                    $("#taskAllocationSigned").removeAttr("checked")
+                    var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                    x[0].setAttribute("class", "layui-unselect layui-form-switch");
+                    var ds = document.getElementsByTagName('em')[0];
+
+                    ds.firstChild.nodeValue = '未签订';
+                }
+
+
+                form.render();// 再次渲染select
+                //监听提交
+                form.on('submit(add)',
+                    function(data) {
+                        data.field.projectId=d.projectId
+                        data.field.taskAllocationId=d.taskAllocationId
+                        //taskAllocationSigned
+                        console.log(data.field);
+                        if(data.field.taskAllocationSigned!="on"){
+                            data.field.taskAllocationSigned="off"
+                        }
+                        //创建基本信息对象
+                        $.ajax({
+                            url:"/TaskAllocation/updateTaskAllocation",
+                            type:"post",
+                            data:data.field,
+                            success:function (res) {
+                                console.log(res)
+                                if(res==1){
+                                    layer.msg("修改成功");
+                                    //  location.reload();//刷新父页面
+                                    //   parent.location.reload();
+                                    window.parent.location.reload();
+                                }else if(res==4){
+                                    layer.msg("账号重复");
+                                }
+                            }
+                        })
+                        return false;
+                    })
+            })
+
+    }
+
+
+</script>
+</html>

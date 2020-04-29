@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.Department">
+        <result column="department_id" property="departmentId"/>
+        <result column="department_level" property="departmentLevel"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="department_head" property="departmentHead"/>
+        <result column="department_superior_id" property="departmentSuperiorId"/>
+    </resultMap>
+
+
+
+<!--     查看所有用户  -->
+    <select id="selectPage" resultMap="BaseResultMap"  parameterType="com.fjtons.oaglxt.pojo.Department">
+        SELECT *
+        FROM department a
+        LEFT JOIN department b ON a.department_superior_id=b.department_id
+        ORDER BY CASE
+        WHEN b.department_superior_id IS NULL THEN a.department_id
+        WHEN b.department_superior_id=0 THEN b.department_id
+        ELSE b.department_superior_id END,
+        CASE
+        WHEN b.department_superior_id=0 THEN a.department_id
+        ELSE a.department_superior_id END,
+        b.department_id
+    </select>
+    <!-- 查询单个部门信息 -->
+    <select id="queryBydepartmentId" parameterType="java.lang.String" resultType="com.fjtons.oaglxt.pojo.Department">
+        SELECT *
+        FROM department
+        where department_id = #{departmentId}
+
+    </select>
+    <!-- 查看该部门下面是否还有部门-->
+    <select id="selBydepartmentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT *
+        FROM department
+        where department_superior_id = #{departmentId}
+    </select>
+    <!-- 查看所有部门 -->
+    <select id="sellDepartment" parameterType="com.fjtons.oaglxt.pojo.Department" resultMap="BaseResultMap">
+        select  * from  department
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != departmentName and departmentName != ''"> department_name LIKE  CONCAT('%',CONCAT(#{departmentName},'%')) and</if>
+        </trim>
+    </select>
+
+    <!-- 利用账号修改信息 -->
+    <update id="updateDepartment" parameterType="com.fjtons.oaglxt.pojo.Department">
+        update department
+        <set>
+            <if test='null != departmentLevel'>department_level = #{departmentLevel},</if>
+            <if test='null != departmentName'> department_name = #{departmentName},</if>
+            <if test='null != departmentHead'>department_head = #{departmentHead},</if>
+            <if test='null != departmentSuperiorId'>department_superior_id = #{departmentSuperiorId},</if>
+        </set>
+        where department_id = #{departmentId}
+    </update>
+    <!-- 添加用户-->
+    <insert id="insertDepartment" parameterType="com.fjtons.oaglxt.pojo.Department">
+        insert  INTO department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != departmentId and "" !=  departmentId '>
+                `department_id`,
+            </if>
+            <if test='null != departmentName and "" !=  departmentName '>
+                `department_name`,
+            </if>
+            <if test='null != departmentLevel and "" !=  departmentLevel '>
+                `department_level`,
+            </if>
+            <if test='null != departmentHead and "" !=  departmentHead '>
+                `department_head`,
+            </if>
+            <if test='null != departmentSuperiorId and "" !=  departmentSuperiorId '>
+                `department_superior_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != departmentId and "" !=  departmentId '>
+                #{departmentId},
+            </if>
+            <if test='null != departmentName and "" !=  departmentName '>
+                #{departmentName},
+            </if>
+            <if test='null != departmentLevel and "" !=  departmentLevel '>
+                #{departmentLevel},
+            </if>
+            <if test='null != departmentHead and "" !=  departmentHead '>
+                #{departmentHead},
+            </if>
+            <if test='null != departmentSuperiorId and "" !=  departmentSuperiorId '>
+                #{departmentSuperiorId},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteArrayDepartment" parameterType="int">
+        delete from department where department_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>部门添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <link rel="stylesheet" href="/lib/layui/css/modules/laydate/default/laydate.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>部门名</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="departmentName"  name="departmentName"  required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">部门负责人</label>
+                <div class="layui-input-inline">
+                    <select name="departmentHead" id="departmentHead" lay-verify="required" lay-search="">
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="" id="add">修改</button></div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    function child(d){
+        console.log(d)
+        layui.use(['form', 'layer','laydate','upload'],
+            function() {
+                var $ = layui.jquery;
+                form = layui.form;
+                var layer = layui.layer;
+                var laydate = layui.laydate;
+                var upload = layui.upload;
+
+                var departmentId;
+
+                //获取部门的信息
+                $.ajax({
+                    type:'POST',
+                    url:'/Department/queryBydepartmentId',
+                    dataType:'json',
+                    data:{department:d},
+                    success:function(da){
+                        $("#departmentName").val(da.departmentName)
+                        departmentId=da.departmentId
+                        //渲染负责人的信息
+                        $.ajax({
+                            type:'POST',
+                            url:'/User/queryUserResponsible',
+                            dataType:'json',
+                            success:function(data){
+                                var str= "";
+                                for(var key in data){
+                                    if(data[key].name==da.departmentHead){
+                                        str += "<option selected value=\""+data[key].name+"\">"+data[key].name+"</option>";
+                                    }else {
+                                        str += "<option  value=\""+data[key].name+"\">"+data[key].name+"</option>";
+                                    }
+                                }
+                                $("#departmentHead").append(str);
+                                form.render('select');
+                            }
+                        });
+
+
+
+
+                    }
+                });
+
+
+                //监听提交
+                form.on('submit(add)',
+                    function(data) {
+                        data.field.departmentId=departmentId
+                    console.log(data.field)
+                        $.ajax({
+                            url:"/Department/updateDepartment",
+                            type:"post",
+                            data:data.field,
+                            success:function (res) {
+                                console.log(res)
+                                if(res==1){
+                                    layer.msg("修改成功");
+                                    //  location.reload();//刷新父页面
+                                    //   parent.location.reload();
+                                    window.parent.location.reload();
+                                }else if(res==4){
+                                    layer.msg("账号重复");
+                                }
+                            }
+                        })
+                        return false;
+                    })
+            })
+    }
+
+
+
+</script>
+</html>

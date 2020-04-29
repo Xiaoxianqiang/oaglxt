@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <title>用户管理控制</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="name" placeholder="请输入用户名称" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body ">
+                    <table class="layui-table" lay-filter="test" id="demo">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-elem-quote">
+    新添加用户密码为123456
+</div>
+</body>
+<!-- 引入城市插件 -->
+<script type="text/javascript" src="js/xcity.js"></script>
+<!-- 行内事件模板 -->
+<script type="text/html"  id="hangnei" >
+    <a title="编辑"  href="javascript:;" lay-event="updata"><!--   onclick="xadmin.open('编辑','basicproject-update.html',900,700)" -->
+        <i class="layui-icon">&#xe642;</i>
+    </a>
+    <!--        <a onclick="xadmin.open('修改密码','member-password.html',600,400)" title="修改密码" href="javascript:;">-->
+    <!--            <i class="layui-icon">&#xe631;</i>-->
+    <!--        </a>-->
+    <a title="删除"   lay-event="delet"  href="javascript:;">
+        <i class="layui-icon">&#xe640;</i>
+    </a>
+</script>
+<!-- 表头部事件 -->
+<script type="text/html" id="toolbarDemo">
+    <div class = "layui-btn-container" >
+                    <button type="button" class="layui-btn layui-btn-sm" onclick="xadmin.open('添加','./User/userAdd.html',500,500)">
+                        <i class="layui-icon">&#xe608;</i> 添加
+                    </button>
+        <!-- 批量删除 -->
+                    <button type="button" class="layui-btn layui-btn-sm  layui-btn-danger"  lay-event = "isAll">
+                        <i class="layui-icon">&#xe640;</i> 批量删除
+                    </button>
+
+        <!--            <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button >-->
+        <!--            <button class = "layui-btn layui-btn-sm" lay-event = "isAll" > 验证是否全选</button>-->
+<!--        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;" onclick="location.reload()" title="刷新">-->
+<!--            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>-->
+<!--        </a>-->
+    </div >
+</script>
+<script>layui.use(['table','form','jquery'],
+    function() {
+        var    table = layui.table;
+        form=layui.form;
+        $= layui.jquery;
+        //初始化列表
+        var  tableIns=table.render({
+            elem: '#demo' //指定原始表格元素选择器（推荐id选择器）
+            ,id:'test'
+            ,url:'/User/selectPage'
+            ,page: true //开启分页
+          //  ,where:{projectProgress:"未开展"}
+            //  ,data:{username:"hahha"}
+            ,toolbar:'#toolbarDemo'
+            ,cols:[//中括号必须隔开
+                [ //表头
+                    {type: 'checkbox' ,fixed:"left"}
+                    ,{field:'account', width:200, sort: true,title:"账号"}
+                    ,{field:'name', width:200,title:"姓名"}
+                    ,{field:'sex', width:100,title:"性别",templet:function (d) {
+                      //  console.log(d.permissions)// 1.超级管理 2.负责人 3.普通用户
+                        if(d.sex=='1'){
+                            return "男"
+                        }else {
+                            return  "女"
+                        }
+                    }}
+                    ,{field:'department.departmentName', width:200,title:"部门",templet:function (d) {
+                        if(d.department==null){
+                            return  "未加入"
+                        }else {
+                            return d.department.departmentName
+                        }
+
+                    }}
+                    ,{field:'phone', width:100,title:"电话"}
+                    ,{field:'sex', width:100,title:"权限",templet:function (d) {
+                          console.log(d.department)// 1.超级管理 2.负责人 3.普通用户
+                        if(d.permissions=='1'){
+                            return "超级管理员"
+                        }else if(d.permissions=='2'){
+                            return  "负责人"
+                        }else if(d.permissions=='3'){
+                            return  "普通用户"
+                        }
+                    }}
+                    ,{ width:100,title:"操作",templet:$("#hangnei")}
+                ]
+            ],//设置表头
+        });
+
+
+        //监听行内操作事件
+        table.on('tool(test)', function (obj) {
+            var layEvent = obj.event;
+            var xuhao=obj.data.account
+            switch (layEvent) {
+                case 'delet':
+                    //确定是否删除
+                    layer.confirm("确定删除嘛", {title: "删除"}, function () {
+                        // layer.alert(JSON.stringify(data));//    /Basic/deletBasicProjectList
+                        console.log(xuhao)//serialNumber
+                        $.ajax({
+                            type: "post",
+                            url: "/User/deleteArrayUser",
+                            traditional: true,//开启后台数组转化
+                            data: {lists: xuhao}, //把前台变量传入后台处理
+                            success: function () {
+                                location.reload()
+                                layer.msg("删除成功")
+                            }
+                        });
+                    })
+                    break;
+                case   "updata":
+                    console.log("修改")
+                    layer.open({
+                        title: "编辑",
+                        type: 2,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['500px', '500px'], //宽高
+                        maxmin: true, //开启最大化最小化按钮
+                        shadeClose:true,
+                        content: "/User/userUpdata.html",
+                        success: function (layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传参
+                            iframe.child(obj.data);
+                        }
+                    })
+                    break;
+            }
+        })
+
+        //监听搜索框
+        form.on('submit(sreach)',function(data){
+            console.log(data.field);
+            tableIns.reload({
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)',
+        function(obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'isAll':       //批量删除
+                    var data = checkStatus.data;
+                    //拿出序号的数组
+                    var xuhao = new Array();
+                    for (var i = 0; i < data.length; i++) {
+                        xuhao.push(data[i].account)
+                    }
+                    if (checkStatus.data.length == 0) {
+                        layer.msg("未选中")
+                    } else {
+                        //确定是否删除
+                        layer.confirm("确定删除嘛", {title: "批量删除"}, function () {
+                            // layer.alert(JSON.stringify(data));//    /Basic/deletBasicProjectList
+                            console.log(xuhao)//serialNumber
+                            $.ajax({
+                                type: "post",
+                                url: "/User/deleteArrayUser",
+                                traditional: true,//开启后台数组转化
+                                data: {lists: xuhao}, //把前台变量传入后台处理
+                                success: function () {
+                                    location.reload()
+                                    layer.msg("删除成功")
+                                }
+                            });
+                        })
+                    }
+                    break;
+            };
+        })
+
+    });</script>
+
+</html>

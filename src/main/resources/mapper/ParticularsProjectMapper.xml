@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjtons.oaglxt.mapper.ParticularsProjectMapper">
+    <!-- 签订信息与未签订的所有类型 -->
+    <resultMap id="BaseResultMap" type="com.fjtons.oaglxt.pojo.SignedProject">
+        <result column="serial_number" property="serialNumber"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_contact" property="projectContact"/>
+        <result column="gross_amount" property="grossAmount"/>
+        <result column="advance" property="advance"/>
+        <result column="arrival_money" property="arrivalMoney"/>
+        <result column="install_money" property="installMoney"/>
+        <result column="accept_money" property="acceptMoney"/>
+        <result column="cash_deposit" property="cashDeposit"/>
+        <result column="business_expense" property="businessExpense"/>
+        <result column="alias" property="alias"/>
+        <result column="flue_gas" property="flueGas"/>
+        <result column="waste_water" property="wasteWater"/>
+        <result column="project_progress" property="projectProgress"/>
+        <result column="collection_ratio" property="collectionRatio"/>
+        <result column="uncollected_proportion" property="uncollectedProportion"/>
+        <result column="invoice_amount" property="invoiceAmount"/>
+        <result column="drain_causes" property="drainCauses"/>
+        <result column="loss_of_phase" property="lossOfPhase"/>
+        <association property="basicProject" javaType="com.fjtons.oaglxt.pojo.BasicProject">
+            <result column="project_type" property="projectType"/>
+            <result column="receipts_amount" property="receiptsAmount"/>
+            <result column="project_source" property="projectSource"/>
+            <result column="principal" property="principal"/>
+            <result column="start_time" property="startTime"/>
+            <result column="finish_time" property="finishTime"/>
+            <result column="project_processing_type" property="projectProcessingType"/>
+            <result column="additional_service" property="additionalService"/>
+            <result column="project_details" property="projectDetails"/>
+            <result column="existing_problem" property="existingProblem"/>
+            <result column="province" property="province"/>
+            <result column="city" property="city"/>
+            <result column="area" property="area"/>
+            <result column="owner_name" property="ownerName"/>
+            <result column="a_state_of" property="aStateOf"/>
+            <result column="whether_outsourcing" property="whetherOutsourcing"/>
+        </association>
+    </resultMap>
+    <sql id="newSel">
+        p.serial_number,p.project_name,p.project_contact,p.gross_amount,p.advance,p.arrival_money,
+           p.install_money,p.accept_money,p.cash_deposit,p.business_expense,p.alias,p.flue_gas,
+                p.waste_water,p.project_progress,p.collection_ratio,p.uncollected_proportion,p.drain_causes,p.loss_of_phase,
+               b.project_type,     b.receipts_amount,      b.project_source,      b.principal,      b.start_time,
+
+                   b.finish_time,     b.project_processing_type,      b.additional_service,      b.project_details,      b.existing_problem,
+                       b.province,     b.city,      b.area,      b.owner_name,      b.a_state_of,  b.whether_outsourcing
+    </sql>
+    <!-- 查询  -->
+    <select id="selAll" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+         SELECT <include refid="newSel"></include>
+        FROM     particulars_project AS p
+		LeFT  JOIN  basic_project AS b
+        ON  b.serial_number=p.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            <if test="null != basicProject.aStateOf and basicProject.aStateOf != ''"> b.a_state_of = #{basicProject.aStateOf} and </if>
+            <if test="null != basicProject.projectName and basicProject.projectName != ''"> b.project_name  LIKE  CONCAT('%',CONCAT(#{basicProject.projectName},'%')) and</if>
+            <if test="null != basicProject.projectType and basicProject.projectType != ''"> b.project_type = #{basicProject.projectType} and </if>
+            <if test="null != basicProject.projectProgress and basicProject.projectProgress != ''"> p.project_progress = #{basicProject.projectProgress} and </if>
+            <if test="null != basicProject.projectProcessingType and basicProject.projectProcessingType != ''"> b.project_processing_type = #{basicProject.projectProcessingType} and </if>
+            b.examination="1"
+        </trim>
+    </select>
+    <!--  查询未对接项目   项目进度为未开展  project_progress  -->
+    <select id="selAllNotDocking" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+         SELECT *
+        FROM    particulars_project AS p
+        LeFT  JOIN  basic_project AS b
+ 		ON  b.serial_number=p.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            b.a_state_of="on" and     p.project_progress = "未开展"
+            <if test="null != basicProject.projectName and basicProject.projectName != ''">and b.project_name  LIKE  CONCAT('%',CONCAT(#{basicProject.projectName},'%')) </if>
+            <if test="null != basicProject.projectType and basicProject.projectType != ''">and b.project_type = #{basicProject.projectType} </if>
+        </trim>
+    </select>
+    <!-- 查询对接项目   -->
+    <select id="selAllDocking" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+        SELECT *
+        FROM    particulars_project AS p
+        LeFT  JOIN  basic_project AS b
+        ON  b.serial_number=p.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            b.a_state_of="on" and p.project_progress = "项目信息确认" or   p.project_progress = "报价方案送出"
+            <if test="null != basicProject.projectName and basicProject.projectName != ''">and b.project_name  LIKE  CONCAT('%',CONCAT(#{basicProject.projectName},'%')) </if>
+            <if test="null != basicProject.projectType and basicProject.projectType != ''">and b.project_type = #{basicProject.projectType} </if>
+        </trim>
+    </select>
+    <!-- 查询落地项目  -->
+    <select id="selAllLanding" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+        SELECT *
+        FROM    particulars_project AS p
+        LeFT  JOIN  basic_project AS b
+        ON  b.serial_number=p.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            b.a_state_of="on" and p.project_progress = "预付款已付" or   p.project_progress = "进度款A已付" or  p.project_progress = "进度款B已付" or   p.project_progress = "待验收"
+            <if test="null != basicProject.projectName and basicProject.projectName != ''">and b.project_name  LIKE  CONCAT('%',CONCAT(#{basicProject.projectName},'%')) </if>
+            <if test="null != basicProject.projectType and basicProject.projectType != ''">and b.project_type = #{basicProject.projectType} </if>
+        </trim>
+    </select>
+<!-- 查询完成项目 -->
+    <select id="selAllComplete" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+        SELECT *
+        FROM    particulars_project AS p
+        LeFT  JOIN  basic_project AS b
+        ON  b.serial_number=p.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            b.a_state_of="on" and p.project_progress = "完成项目" or   p.project_progress = " 项目完成(只保金未收)"
+            <if test="null != basicProject.projectName and basicProject.projectName != ''">and b.project_name  LIKE  CONCAT('%',CONCAT(#{basicProject.projectName},'%')) </if>
+            <if test="null != basicProject.projectType and basicProject.projectType != ''">and b.project_type = #{basicProject.projectType} </if>
+        </trim>
+    </select>
+<!-- 查询终止项目 -->
+    <select id="selAllTermination" resultMap="BaseResultMap" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+        SELECT *
+        FROM    particulars_project AS p
+        LeFT  JOIN  basic_project AS b
+        ON  b.serial_number=p.serial_number
+        <trim prefix="where" suffix="" suffixOverrides="and">
+            b.a_state_of="on" and p.project_progress = "项目终止" or   p.project_progress = "除项目终止以外"
+            <if test="null != basicProject.projectName and basicProject.projectName != ''">and b.project_name  LIKE  CONCAT('%',CONCAT(#{basicProject.projectName},'%')) </if>
+            <if test="null != basicProject.projectType and basicProject.projectType != ''">and b.project_type = #{basicProject.projectType} </if>
+        </trim>
+    </select>
+
+
+
+    <!-- 插入 -->
+    <!-- 汇总创建对象时自动插入数据 -->
+    <insert id="insetBySignedProject" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+          INSERT INTO particulars_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != serialNumber and "" !=  serialNumber '>
+                `serial_number`,
+            </if>
+            <if test='null != projectName and "" !=  projectName'>
+                `project_name`,
+            </if>
+            <if test='null != projectContact and "" !=  projectContact'>
+                `project_contact`,
+            </if>
+            <if test='null != grossAmount and "" !=  grossAmount'>
+                `gross_amount`,
+            </if>
+            <if test='null != advance and "" !=  advance'>
+                `advance`,
+            </if>
+            <if test='null != arrivalMoney and "" !=  arrivalMoney'>
+                `arrival_money`,
+            </if>
+            <if test='null != installMoney and "" !=  installMoney'>
+                `install_money`,
+            </if>
+            <if test='null != acceptMoney and "" !=  acceptMoney'>
+                `accept_money`,
+            </if>
+            <if test='null != cashDeposit and "" !=  cashDeposit'>
+                `cash_deposit`,
+            </if>
+            <if test='null != businessExpense and "" !=  businessExpense'>
+                `business_expense`,
+            </if>
+            <if test='null != alias and "" !=  alias'>
+                `alias`,
+            </if>
+            <if test='null != flueGas and "" !=  flueGas'>
+                `flue_gas`,
+            </if>
+            <if test='null != wasteWater and "" !=  wasteWater'>
+                `waste_water`,
+            </if>
+            <if test='null != projectProgress and "" !=  projectProgress'>
+                `project_progress`,
+            </if>
+            <if test='null != collectionRatio and "" !=  collectionRatio'>
+                `collection_ratio`,
+            </if>
+            <if test='null != uncollectedProportion and "" !=  uncollectedProportion'>
+                `uncollected_proportion`,
+            </if>
+            <if test='null != invoiceAmount and "" !=  invoiceAmount'>
+                `invoice_amount`,
+            </if>
+            <if test='null != drainCauses and "" !=  drainCauses'>
+                `drain_causes`,
+            </if>
+            <if test='null != lossOfPhase and "" !=  lossOfPhase'>
+                `loss_of_phase`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != serialNumber and "" != serialNumber'>
+                #{serialNumber},
+            </if>
+            <if test='null != projectName and "" != projectName'>
+                #{projectName},
+            </if>
+            <if test='null != projectContact and "" !=  projectContact'>
+                #{projectContact},
+            </if>
+            <if test='null != grossAmount and "" !=  grossAmount'>
+                #{grossAmount},
+            </if>
+            <if test='null != advance and "" !=  advance'>
+                #{advance},
+            </if>
+            <if test='null != arrivalMoney and "" !=  arrivalMoney'>
+                #{arrivalMoney},
+            </if>
+            <if test='null != installMoney and "" !=  installMoney'>
+                #{installMoney},
+            </if>
+            <if test='null != acceptMoney and "" !=  acceptMoney'>
+                #{acceptMoney},
+            </if>
+            <if test='null != cashDeposit and "" !=  cashDeposit'>
+                #{cashDeposit},
+            </if>
+            <if test='null != businessExpense and "" !=  businessExpense'>
+                #{businessExpense},
+            </if>
+            <if test='null != alias and "" !=  alias'>
+                #{alias},
+            </if>
+            <if test='null != flueGas and "" !=  flueGas'>
+                #{flueGas},
+            </if>
+            <if test='null != wasteWater and "" !=  wasteWater'>
+                  #{wasteWater},
+            </if>
+            <if test='null != projectProgress and "" !=  projectProgress'>
+                #{projectProgress},
+            </if>
+            <if test='null != collectionRatio and "" !=  collectionRatio'>
+                #{collectionRatio},
+            </if>
+            <if test='null != uncollectedProportion and "" !=  uncollectedProportion'>
+                #{uncollectedProportion},
+            </if>
+            <if test='null != invoiceAmount and "" !=  invoiceAmount'>
+                #{invoiceAmount},
+            </if>
+            <if test='null != drainCauses and "" !=  drainCauses'>
+                #{drainCauses},
+            </if>
+            <if test='null != lossOfPhase and "" !=  lossOfPhase'>
+                #{lossOfPhase},
+            </if>
+        </trim>
+    </insert>
+
+<update id="updataSignedProject" parameterType="com.fjtons.oaglxt.pojo.SignedProject">
+        UPDATE particulars_project
+        <set>
+            <if test="null != projectName and projectName != ''">project_name = #{projectName},</if>
+            <if test="null != projectContact and projectContact != ''">project_contact = #{projectContact},</if>
+            <if test="null != grossAmount and grossAmount != ''">gross_amount = #{grossAmount},</if>
+            <if test="null != advance and advance != ''">advance = #{advance},</if>
+            <if test="null != arrivalMoney and arrivalMoney != ''">arrival_money = #{arrivalMoney},</if>
+            <if test="null != installMoney and installMoney != ''">install_money = #{installMoney},</if>
+            <if test="null != acceptMoney and acceptMoney != ''">accept_money = #{acceptMoney},</if>
+            <if test="null != cashDeposit and cashDeposit != ''">cash_deposit = #{cashDeposit},</if>
+            <if test="null != businessExpense and businessExpense != ''">business_expense = #{businessExpense},</if>
+            <if test="null != alias and alias != ''">  alias = #{alias} ,</if>
+            <if test="null != flueGas and flueGas != ''">flue_gas = #{flueGas},</if>
+            <if test="null != wasteWater and wasteWater != ''">waste_water = #{wasteWater},</if>
+            <if test="null != projectProgress and projectProgress != ''">project_progress = #{projectProgress},</if>
+            <if test="null != collectionRatio and collectionRatio != ''">collection_ratio = #{collectionRatio},</if>
+            <if test="null != uncollectedProportion and uncollectedProportion != ''">uncollected_proportion = #{uncollectedProportion},</if>
+            <if test="null != invoiceAmount and invoiceAmount != ''">invoice_amount = #{invoiceAmount},</if>
+            <if test="null != drainCauses and drainCauses != ''">drain_causes = #{drainCauses},</if>
+            <if test="null != lossOfPhase and lossOfPhase != ''">loss_of_phase = #{lossOfPhase},</if>
+        </set>
+        WHERE serial_number = #{serialNumber}
+</update>
+    <delete id="deleteSignedProject">
+        DELETE
+        FROM particulars_project
+        WHERE serial_number = #{serialNumber}
+    </delete>
+
+</mapper>

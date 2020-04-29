@@ -1,0 +1,42 @@
+
+server:
+  port: 8083
+spring:
+  datasource:
+    username: root
+    password: 123456      #71a7971527  #123456
+    url: jdbc:mysql://localhost:3306/oaform?characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  resources:
+    static-locations: classpath:/templates/ ,classpath:/static/ ,classpath:/dist/
+  thymeleaf:
+    servlet:
+      content-type: text/html
+    cache: false #关闭缓存
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    prefix: classpath:/templates/
+    suffix: .html
+  mvc:
+    view:
+      suffix: .html
+# 该配置节点为独立的节点
+mybatis:
+  type-aliases-package: com.fjtons.sgxtgl.pojo # 注意：对应实体类的路径
+  mapper-locations: mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径 mybatis.mapper/admin/AdminMapper.xml
+  logImpl: STDOUT_LOGGING
+  configuration:
+    #配置项：开启下划线到驼峰的自动转换. 作用：将数据库字段根据驼峰规则自动注入到对象属性。
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    call-setters-on-nulls: true
+#日志配置
+logging:
+  config:
+    classpath: log4j.properties
+#分页配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
